@@ -1,0 +1,21 @@
+{
+  "appId": "com.manifestation.journal",
+  "appName": "Manifestation Journal",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#FFF9C4",
+    "scrollEnabled": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#FFF9C4",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "Light",
+      "backgroundColor": "#FFF9C4"
+    }
+  }
+}
