@@ -10,6 +10,7 @@ import { exportEntries } from '../utils/exportPdf'
 import SealButton from './SealButton'
 import HistoryPanel from './HistoryPanel'
 import NotificationToggle from './NotificationToggle'
+import InfoModal from './InfoModal'
 
 const PROMPT = 'Write as if it has already happened…'
 const AUTOSAVE_DELAY = 1200
@@ -20,6 +21,7 @@ export default function JournalPage() {
   const [text, setText] = useState('')
   const [sealed, setSealed] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
+  const [showInfo, setShowInfo] = useState(false)
   const [saved, setSaved] = useState(true)
   const [exporting, setExporting] = useState(false)
   const [sealVisible, setSealVisible] = useState(false)
@@ -96,6 +98,14 @@ export default function JournalPage() {
             title="Browse past entries"
           >
             <span>📖</span> History
+          </button>
+          <button
+            onClick={() => setShowInfo(true)}
+            className="w-6 h-6 rounded-full border-2 border-ink/40 text-ink/60 hover:border-ink hover:text-ink
+                       transition-all duration-200 font-journal text-sm font-bold flex items-center justify-center"
+            title="Why this design?"
+          >
+            ?
           </button>
         </div>
       </header>
@@ -188,6 +198,9 @@ export default function JournalPage() {
           </div>
         </div>
       </main>
+
+      {/* Info modal */}
+      {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
 
       {/* History panel */}
       {showHistory && (
