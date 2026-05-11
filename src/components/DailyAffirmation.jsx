@@ -10,12 +10,13 @@ export default function DailyAffirmation({ onClose }) {
       <div className="absolute inset-0 bg-ink-dark/15 backdrop-blur-sm" onClick={onClose} />
 
       <div className="relative z-10 w-full max-w-sm animate-fade-in text-center">
-        {/* Date */}
         <p className="font-journal text-sm text-ink/50 mb-6">{today}</p>
 
-        {/* Affirmation card */}
         <div className="bg-paper border-2 border-ink/15 rounded-2xl px-8 py-10 shadow-xl paper-texture mb-5">
-          <div className="text-3xl mb-5">✦</div>
+          <div className="text-3xl mb-4">✦</div>
+          <p className="font-journal text-sm text-ink/50 italic mb-6">
+            This space is yours. Take a breath and begin.
+          </p>
           <p className="font-journal text-lg font-bold text-ink leading-relaxed">
             "{affirmation}"
           </p>
@@ -29,9 +30,7 @@ export default function DailyAffirmation({ onClose }) {
           Open my journal
         </button>
 
-        <p className="font-journal text-xs text-ink/30 mt-4">
-          tap anywhere to close
-        </p>
+        <p className="font-journal text-xs text-ink/30 mt-4">tap anywhere to close</p>
       </div>
     </div>
   )

@@ -14,15 +14,10 @@ export default function App() {
 
   useEffect(() => {
     initNotifications()
-
     const onboarded = localStorage.getItem(ONBOARDED_KEY)
     if (!onboarded) {
       setScreen('welcome')
-      return
-    }
-
-    const lastSeen = localStorage.getItem(LAST_AFFIRMATION_KEY)
-    if (lastSeen !== getTodayKey()) {
+    } else if (localStorage.getItem(LAST_AFFIRMATION_KEY) !== getTodayKey()) {
       setScreen('affirmation')
     }
   }, [])
