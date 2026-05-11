@@ -6,17 +6,18 @@ import {
   saveEntry,
   wordCount,
 } from '../utils/storage'
+import { getDailyPrompt } from '../utils/affirmations'
 import { exportEntries } from '../utils/exportPdf'
 import SealButton from './SealButton'
 import HistoryPanel from './HistoryPanel'
 import NotificationToggle from './NotificationToggle'
 import InfoModal from './InfoModal'
 
-const PROMPT = 'Write as if it has already happened…'
 const AUTOSAVE_DELAY = 1200
 
 export default function JournalPage() {
   const todayKey = getTodayKey()
+  const dailyPrompt = getDailyPrompt()
   const [activeDate, setActiveDate] = useState(todayKey)
   const [text, setText] = useState('')
   const [sealed, setSealed] = useState(false)
@@ -30,16 +31,18 @@ export default function JournalPage() {
 
   const isToday = activeDate === todayKey
 
-  // Load entry when activeDate changes
   useEffect(() => {
     const entry = getEntry(activeDate)
-    setText(entry.text)
+    // Pre-fill today's empty entry with the daily prompt starter
+    const initialText = (!entry.text && activeDate === todayKey)
+      ? dailyPrompt
+      : entry.text
+    setText(initialText)
     setSealed(entry.sealed)
     setSaved(true)
     setSealVisible(entry.sealed)
   }, [activeDate])
 
-  // Autosave
   const scheduleAutosave = useCallback(
     (newText) => {
       setSaved(false)
@@ -85,11 +88,9 @@ export default function JournalPage() {
     <div className="min-h-screen paper-texture flex flex-col">
       {/* Top bar */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-ink/10">
-        <div className="flex items-center gap-3">
-          <span className="font-journal text-2xl font-bold text-ink tracking-wide">
-            ✦ Manifestation Journal
-          </span>
-        </div>
+        <span className="font-journal text-2xl font-bold text-ink tracking-wide">
+          ✦ Manifestation Journal
+        </span>
         <div className="flex items-center gap-4">
           <NotificationToggle />
           <button
@@ -115,9 +116,7 @@ export default function JournalPage() {
         <div className="w-full max-w-2xl flex flex-col gap-4">
           {/* Date header */}
           <div className="text-center animate-fade-in">
-            <h1 className="font-journal text-2xl font-bold text-ink">
-              {displayDate}
-            </h1>
+            <h1 className="font-journal text-2xl font-bold text-ink">{displayDate}</h1>
             {!isToday && (
               <button
                 onClick={() => setActiveDate(todayKey)}
@@ -128,10 +127,17 @@ export default function JournalPage() {
             )}
           </div>
 
-          {/* Prompt */}
-          <p className="font-journal text-center text-ink/50 italic text-base">
-            {PROMPT}
-          </p>
+          {/* Daily rotating prompt */}
+          <div className="text-center">
+            <p className="font-journal text-ink/40 italic text-sm">
+              Write as if it has already happened…
+            </p>
+            {isToday && (
+              <p className="font-journal text-ink/60 italic text-base mt-1">
+                "{dailyPrompt}<span className="opacity-40">…"</span>
+              </p>
+            )}
+          </div>
 
           {/* Writing area */}
           <div className="relative rounded-lg border border-ink/15 shadow-sm overflow-hidden"
@@ -142,7 +148,7 @@ export default function JournalPage() {
                 value={text}
                 onChange={handleTextChange}
                 disabled={sealed}
-                placeholder="I am so grateful that…"
+                placeholder={dailyPrompt + '…'}
                 className="journal-textarea min-h-[55vh]"
                 style={{ height: 'auto' }}
                 onInput={e => {
@@ -170,7 +176,6 @@ export default function JournalPage() {
 
           {/* Footer bar */}
           <div className="flex items-center justify-between flex-wrap gap-3">
-            {/* Word count + save status */}
             <div className="flex items-center gap-4">
               <span className="font-journal text-xs text-ink/45">
                 {wc} {wc === 1 ? 'word' : 'words'}
@@ -180,7 +185,6 @@ export default function JournalPage() {
               </span>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center gap-3">
               <button
                 onClick={handleExportSingle}
@@ -190,7 +194,6 @@ export default function JournalPage() {
               >
                 {exporting ? 'Exporting…' : '📄 Export'}
               </button>
-
               {isToday && (
                 <SealButton sealed={sealed} onSeal={handleSeal} onUnseal={handleUnseal} />
               )}
@@ -199,10 +202,8 @@ export default function JournalPage() {
         </div>
       </main>
 
-      {/* Info modal */}
       {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
 
-      {/* History panel */}
       {showHistory && (
         <HistoryPanel
           onClose={() => setShowHistory(false)}

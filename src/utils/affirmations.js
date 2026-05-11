@@ -62,9 +62,49 @@ const AFFIRMATIONS = [
   "Today is a good day for something extraordinary to begin.",
 ]
 
-export function getDailyAffirmation() {
-  const dayOfYear = Math.floor(
+const PROMPTS = [
+  "I am so grateful that I woke up this morning to ",
+  "It feels incredible that I finally ",
+  "I'm overwhelmed with gratitude because ",
+  "I can't believe how much has changed since ",
+  "I'm so happy and grateful now that ",
+  "Today I'm reflecting on how amazing it feels that ",
+  "My heart is full because ",
+  "I feel so proud of myself for ",
+  "Life feels so abundant now that ",
+  "I'm living proof that dreams come true — ",
+  "Something shifted and now ",
+  "I remember when this felt impossible, and now ",
+  "The best part of my life right now is ",
+  "I wake up every morning excited because ",
+  "I used to wonder if it would happen, and it did — ",
+  "Everything clicked into place when ",
+  "I feel so free now that ",
+  "The version of me I always wanted to be is here, and she ",
+  "I move through my days with ease because ",
+  "I'm writing this with tears of joy because ",
+  "It happened. I ",
+  "People around me can feel the shift — I ",
+  "I stopped waiting and started living when ",
+  "I am exactly where I dreamed I would be, and it feels like ",
+  "The gratitude I feel right now is indescribable — ",
+  "I never take for granted that I now ",
+  "The life I wrote about is the life I'm living — ",
+  "I smile every time I think about how ",
+  "I gave myself permission and everything changed — ",
+  "This time last year I was hoping for this, and now ",
+]
+
+function getDayOfYear() {
+  return Math.floor(
     (Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86_400_000
   )
-  return AFFIRMATIONS[dayOfYear % AFFIRMATIONS.length]
+}
+
+export function getDailyAffirmation() {
+  return AFFIRMATIONS[getDayOfYear() % AFFIRMATIONS.length]
+}
+
+export function getDailyPrompt() {
+  return PROMPTS[getDayOfYear() % PROMPTS.length]
 }
