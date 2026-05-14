@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { resolve } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig({
   plugins: [
@@ -9,11 +13,11 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'icons/*.png'],
       manifest: {
-        name: 'Manifestation Journal',
-        short_name: 'Journal',
-        description: 'Your daily manifestation journaling space',
-        theme_color: '#FFF9C4',
-        background_color: '#FFF9C4',
+        name: 'Morning Ritual',
+        short_name: 'Ritual',
+        description: 'My morning self-care routine — meditate and journal',
+        theme_color: '#0d0b09',
+        background_color: '#0d0b09',
         display: 'standalone',
         orientation: 'portrait',
         scope: '/',
@@ -29,7 +33,7 @@ export default defineConfig({
             sizes: '1170x2532',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'Daily journal entry',
+            label: 'Morning ritual home',
           },
         ],
       },
@@ -58,4 +62,12 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        journal: resolve(__dirname, 'journal.html'),
+      },
+    },
+  },
 })

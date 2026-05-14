@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Still Space</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0b09;
+      --text: #e8ddd0;
+      --muted: #5a4e46;
+      --dim: #211c18;
+      --accent: #c4956a;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.75s ease;
+    }
+    .screen.active { opacity: 1; pointer-events: all; }
+
+    #menu-screen { padding: 0 0 56px; }
+
+    .menu-hero { text-align: center; padding: 60px 24px 44px; }
+    .hero-dot {
+      width: 7px; height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin: 0 auto 22px;
+      opacity: 0.65;
+    }
+    .menu-hero h1 {
+      font-size: 1.8rem;
+      font-weight: normal;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .menu-hero p {
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .cards { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; }
+
+    .card {
+      border-radius: 20px;
+      padding: 22px 20px 20px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .card:active { transform: scale(0.974); opacity: 0.88; }
+
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+    .card-title { font-size: 1.05rem; font-weight: normal; letter-spacing: 0.02em; line-height: 1.3; }
+    .card-dur { font-size: 0.66rem; letter-spacing: 0.1em; opacity: 0.5; padding-top: 3px; white-space: nowrap; margin-left: 10px; }
+    .card-tag { font-size: 0.63rem; letter-spacing: 0.13em; text-transform: uppercase; opacity: 0.45; margin-bottom: 10px; }
+    .card-desc { font-size: 0.8rem; line-height: 1.65; opacity: 0.68; }
+
+    #med-screen { background: var(--bg); }
+
+    .med-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 22px 20px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: inherit;
+    }
+    .btn-back {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.35);
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: color 0.2s, border-color 0.2s;
+      -webkit-appearance: none;
+      line-height: 1;
+    }
+    .btn-back:active { color: var(--text); border-color: rgba(255,255,255,0.28); }
+
+    .med-meta { flex: 1; min-width: 0; }
+    .med-meta h2 { font-size: 0.88rem; font-weight: normal; letter-spacing: 0.06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .med-meta span { font-size: 0.66rem; color: var(--muted); letter-spacing: 0.08em; }
+
+    .prog-wrap { height: 1px; background: rgba(255,255,255,0.06); margin: 0 20px; }
+    .prog-fill { height: 100%; width: 0%; transition: width 1.4s ease; }
+
+    .lines-area { padding: 44px 28px 20px; display: flex; flex-direction: column; min-height: calc(100vh - 160px); }
+
+    .line {
+      font-size: 1rem;
+      line-height: 1.95;
+      text-align: center;
+      color: rgba(232,221,208,0.12);
+      transition: color 0.55s ease, font-size 0.45s ease;
+      padding: 1px 0;
+    }
+    .line.active { color: var(--text); font-size: 1.12rem; }
+    .line.past { color: rgba(232,221,208,0.18); font-size: 0.92rem; }
+
+    .controls {
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 36px 38px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: inherit;
+    }
+    .btn-ctrl {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.11);
+      color: rgba(255,255,255,0.45);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      -webkit-appearance: none;
+    }
+    .btn-ctrl:active { background: rgba(255,255,255,0.07); }
+    .btn-ctrl.lit { border-color: rgba(255,255,255,0.28); color: rgba(255,255,255,0.78); background: rgba(255,255,255,0.05); }
+    .btn-sound { width: 44px; height: 44px; font-size: 1.05rem; }
+    .btn-pause { width: 62px; height: 62px; font-size: 1.5rem; }
+    .ctrl-spacer { width: 44px; }
+
+    #closing-screen { align-items: center; justify-content: center; text-align: center; padding: 40px 32px; background: var(--bg); }
+    .closing-glyph { font-size: 2.4rem; color: var(--accent); margin-bottom: 32px; opacity: 0; transform: scale(0.75); transition: opacity 1.8s ease, transform 1.8s ease; }
+    .closing-glyph.in { opacity: 0.65; transform: scale(1); }
+    .closing-words { font-size: 1rem; line-height: 2.1; color: var(--muted); max-width: 264px; opacity: 0; transition: opacity 1.8s ease 0.9s; }
+    .closing-words.in { opacity: 1; }
+    .btn-return {
+      margin-top: 52px;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.13);
+      color: rgba(255,255,255,0.38);
+      padding: 13px 34px;
+      border-radius: 40px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 1.8s ease 2.4s, color 0.2s, border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .btn-return.in { opacity: 1; }
+    .btn-return:active { color: var(--text); border-color: rgba(255,255,255,0.32); }
+
+    .home-link {
+      position: fixed;
+      top: 22px; right: 20px;
+      z-index: 20;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .home-link:active { color: rgba(255,255,255,0.5); }
+  </style>
+</head>
+<body>
+
+<a href="/" class="home-link">Home</a>
+
+<div id="menu-screen" class="screen active">
+  <div class="menu-hero">
+    <div class="hero-dot"></div>
+    <h1>Still Space</h1>
+    <p>Choose your practice</p>
+  </div>
+  <div class="cards" id="cards"></div>
+</div>
+
+<div id="med-screen" class="screen">
+  <div class="med-header" id="med-header">
+    <button class="btn-back" id="btn-back">&#8592;</button>
+    <div class="med-meta">
+      <h2 id="med-name"></h2>
+      <span id="med-dur"></span>
+    </div>
+  </div>
+  <div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
+  <div class="lines-area" id="lines-area"></div>
+  <div class="controls" id="controls">
+    <button class="btn-ctrl btn-sound" id="btn-sound">🌧</button>
+    <button class="btn-ctrl btn-pause" id="btn-pause">⏸</button>
+    <div class="ctrl-spacer"></div>
+  </div>
+</div>
+
+<div id="closing-screen" class="screen">
+  <div class="closing-glyph" id="glyph">✶</div>
+  <div class="closing-words" id="words">You did something kind<br>for yourself today.<br><br>Carry this stillness<br>with you.</div>
+  <button class="btn-return" id="btn-return">Return</button>
+</div>
+
+<script>
+const MEDITATIONS = [
+  { id:'grounding', title:'5-4-3-2-1 Grounding', tag:'Somatic · Sensory', desc:'Pulls you into the present moment through your senses. Good for anxiety spikes.', duration:'4 min',
+    pal:{ bg:'linear-gradient(150deg,#1d1209 0%,#0f0b07 100%)', border:'rgba(196,149,106,0.18)', accent:'#c4956a', bar:'#c4956a' },
+    lines:['Find a comfortable position.','Gently close your eyes if that feels safe.','Take a slow, deep breath in.','And let it go.','...','We are going to anchor you in this moment.','Right here. Right now.','...','When you’re ready, open your eyes softly.','Look around and silently name five things you can see.','A shape. A colour. A shadow. A texture. A light.','Take your time with each one.','...','Now notice four things you can physically feel.','The weight of your body being held.','The temperature of the air against your skin.','The sensation of your hands, wherever they rest.','Let each one ground you a little further.','...','Three things you can hear.','Listen past the obvious sounds.','Find something underneath — a hum, a rustle, a distant tone.','...','Two things you can smell.','Or simply notice the quality of air as it enters.','...','And one thing you can taste.','Even the faint taste of your own breath.','...','You are here.','Not in the past. Not in the future.','In this body. In this moment.','...','Take one more deep breath.','And as you exhale — let any tension dissolve.','You are safe. You are present.']
+  },
+  { id:'box', title:'Box Breathing', tag:'Breath · Body', desc:'Four counts in, hold, out, hold. No thinking required. Good for overwhelm.', duration:'3 min',
+    pal:{ bg:'linear-gradient(150deg,#0c1820 0%,#080d13 100%)', border:'rgba(107,158,200,0.18)', accent:'#6b9ec8', bar:'#6b9ec8' },
+    lines:['Sit comfortably. Hands resting gently.','We’ll breathe together in a simple rhythm.','Let your body lead. Your mind can rest.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Good.','...','Again — breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Notice how your nervous system begins to soften.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','One more round.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Let your breath return to its natural rhythm.','Feel the steadiness that is always here.','This rhythm belongs to you.']
+  },
+  { id:'fear', title:'Fear Release', tag:'Acknowledge · Breathe · Release', desc:'Name the fear, breathe through it, let it pass. For when the alarm fires.', duration:'4 min',
+    pal:{ bg:'linear-gradient(150deg,#110c1b 0%,#0b080f 100%)', border:'rgba(155,126,200,0.18)', accent:'#9b7ec8', bar:'#9b7ec8' },
+    lines:['Something has triggered the alarm inside you.','That’s okay.','Fear is not your enemy.','It’s a part of you trying to keep you safe.','...','Take a slow breath in.','And out.','...','Place one hand on your chest if you’d like.','Feel your own heartbeat.','It’s still here. You’re still here.','...','Quietly, just to yourself — name what you’re afraid of.','Don’t push it away. Let it exist for a moment.','Give it a name.','...','Now breathe in — slowly.','And as you breathe out, imagine that fear as a colour or a shape.','Watch it as you exhale.','It doesn’t have to leave. Just notice it.','...','Fear often tells a story about what might happen.','But right now, in this breath, you are okay.','...','Breathe in again.','And out.','...','You don’t have to fight the fear.','You don’t have to fix it right now.','You only have to breathe.','...','One more breath — long and slow.','And as you exhale — let it move through you.','Not stay. Move.','...','You are bigger than this feeling.','It will pass. And you will still be here.']
+  },
+  { id:'compassion', title:'Self Compassion Reset', tag:'Forgiveness · Kindness', desc:'For moments you’ve snapped or fallen short. A gentle return to yourself.', duration:'4 min',
+    pal:{ bg:'linear-gradient(150deg,#1d0d15 0%,#110810 100%)', border:'rgba(200,126,155,0.18)', accent:'#c87e9b', bar:'#c87e9b' },
+    lines:['Something happened.','Maybe you said something you wish you hadn’t.','Maybe you fell short of who you want to be.','...','I want you to take a breath before you do anything else.','Breathe in.','And out.','...','You are not a bad person.','You are a person who is tired, or overwhelmed, or scared.','And sometimes those feelings come out sideways.','...','If there’s someone you’ve hurt — you’ll tend to that.','You already know you will.','But right now, we’re tending to you.','...','Place your hand on your heart.','Feel the warmth of your own touch.','...','Breathe in — and silently say to yourself:','This is hard.','I am human.','I am doing my best.','...','Say it again, gently.','This is hard.','I am human.','I am doing my best.','...','You are allowed to be imperfect.','Growth is not a straight line.','The fact that this moment matters to you —','that is who you are.','...','Take one more breath.','And let yourself be held — in your own kindness.']
+  },
+  { id:'letgo', title:'Let It Go', tag:'Release · Open Hands', desc:'For when you’re gripping an outcome. Loosen your hold, trust the unfolding.', duration:'4 min',
+    pal:{ bg:'linear-gradient(150deg,#0c1c13 0%,#081109 100%)', border:'rgba(126,200,155,0.18)', accent:'#7ec89b', bar:'#7ec89b' },
+    lines:['There’s something you’re holding onto.','An outcome you’ve been steering toward.','A result you need to go a certain way.','...','Take a breath.','And notice — where do you feel that grip in your body?','In your jaw? Your shoulders? Your chest?','...','Breathe in slowly.','And as you exhale, soften that place — just slightly.','Not letting go yet. Just softening.','...','Here is something true:','You have done what you can do.','You have shown up. You have tried.','...','The rest — the outcome, the response, the result —','lives outside your hands.','Holding it tightly doesn’t change what will happen.','It only costs you peace.','...','If you’d like — hold your hands out, palms up.','Imagine placing what you’re holding into open palms.','Not throwing it away.','Just releasing your grip.','...','Breathe in.','And as you breathe out — open your hands.','Physically, if you can.','...','What happens is allowed to happen.','You are allowed to not know.','You are allowed to trust.','...','Take one more breath.','And let the future be what it will be.','You are here. That is enough.']
+  }
+];
+
+let cur=null,lineIdx=0,dispLines=[],paused=false,inGap=false,gapTimer=null,soundOn=false,audioCtx=null,noiseGain=null;
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+speechSynthesis.onvoiceschanged=()=>{};
+function bestVoice(){const vs=speechSynthesis.getVoices();const p=['Samantha','Karen','Moira','Tessa','Fiona','Victoria','Susan','Serena'];for(const n of p){const v=vs.find(v=>v.name.includes(n));if(v)return v;}const fe=vs.find(v=>v.lang.startsWith('en')&&/female/i.test(v.name));if(fe)return fe;const en=vs.find(v=>v.lang.startsWith('en-'));if(en)return en;return vs[0]||null;}
+
+function speak(text,cb){speechSynthesis.cancel();const utt=new SpeechSynthesisUtterance(text);utt.rate=0.72;utt.pitch=0.88;utt.volume=1;const v=bestVoice();if(v)utt.voice=v;inGap=false;utt.onend=()=>{inGap=true;gapTimer=setTimeout(()=>{inGap=false;cb();},950);};utt.onerror=()=>{inGap=true;gapTimer=setTimeout(()=>{inGap=false;cb();},700);};speechSynthesis.speak(utt);}
+
+setInterval(()=>{if(!paused&&speechSynthesis.speaking){speechSynthesis.pause();speechSynthesis.resume();}},12000);
+
+function nextLine(){if(paused||!cur)return;const lines=cur.lines;if(lineIdx>=lines.length){finish();return;}const raw=lines[lineIdx];lineIdx++;if(raw==='...'){inGap=true;gapTimer=setTimeout(()=>{inGap=false;nextLine();},1700);return;}const domIdx=dispLines.indexOf(lineIdx-1);document.querySelectorAll('.line').forEach((el,i)=>{el.classList.remove('active','past');if(i===domIdx)el.classList.add('active');else if(i<domIdx)el.classList.add('past');});const active=document.querySelector('.line.active');if(active)active.scrollIntoView({behavior:'smooth',block:'center'});const pct=dispLines.length>1?(domIdx/(dispLines.length-1))*100:100;document.getElementById('prog').style.width=pct+'%';speak(raw,nextLine);}
+
+function startMed(med){cur=med;lineIdx=0;paused=false;inGap=false;clearTimeout(gapTimer);speechSynthesis.cancel();dispLines=med.lines.reduce((a,l,i)=>{if(l!=='...')a.push(i);return a;},[]);const ms=document.getElementById('med-screen');ms.style.background=med.pal.bg;document.getElementById('prog').style.background=med.pal.bar;document.getElementById('prog').style.width='0%';document.getElementById('med-name').textContent=med.title;document.getElementById('med-dur').textContent=med.duration;const area=document.getElementById('lines-area');area.innerHTML='';med.lines.forEach(l=>{if(l==='...')return;const d=document.createElement('div');d.className='line';d.textContent=l;area.appendChild(d);});document.getElementById('btn-pause').textContent='⏸';show('med-screen');setTimeout(nextLine,900);}
+
+document.getElementById('btn-pause').addEventListener('click',()=>{if(paused){paused=false;document.getElementById('btn-pause').textContent='⏸';if(inGap){nextLine();}else{speechSynthesis.resume();}}else{paused=true;document.getElementById('btn-pause').textContent='▶';speechSynthesis.pause();clearTimeout(gapTimer);}});
+
+document.getElementById('btn-back').addEventListener('click',()=>{speechSynthesis.cancel();clearTimeout(gapTimer);paused=false;cur=null;show('menu-screen');});
+
+function finish(){speechSynthesis.cancel();show('closing-screen');setTimeout(()=>document.getElementById('glyph').classList.add('in'),350);setTimeout(()=>document.getElementById('words').classList.add('in'),1200);setTimeout(()=>document.getElementById('btn-return').classList.add('in'),2800);}
+
+document.getElementById('btn-return').addEventListener('click',()=>{['glyph','words','btn-return'].forEach(id=>document.getElementById(id).classList.remove('in'));buildMenu();show('menu-screen');});
+
+function initAudio(){if(audioCtx)return;audioCtx=new(window.AudioContext||window.webkitAudioContext)();const sr=audioCtx.sampleRate;const buf=audioCtx.createBuffer(1,sr*4,sr);const d=buf.getChannelData(0);let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;for(let i=0;i<d.length;i++){const w=Math.random()*2-1;b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;b2=0.96900*b2+w*0.1538520;b3=0.86650*b3+w*0.3104856;b4=0.55000*b4+w*0.5329522;b5=-0.7616*b5-w*0.0168980;d[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)/9.5;b6=w*0.115926;}const src=audioCtx.createBufferSource();src.buffer=buf;src.loop=true;const lpf=audioCtx.createBiquadFilter();lpf.type='lowpass';lpf.frequency.value=480;noiseGain=audioCtx.createGain();noiseGain.gain.value=0;src.connect(lpf);lpf.connect(noiseGain);noiseGain.connect(audioCtx.destination);src.start();}
+
+document.getElementById('btn-sound').addEventListener('click',()=>{initAudio();if(audioCtx.state==='suspended')audioCtx.resume();soundOn=!soundOn;noiseGain.gain.setTargetAtTime(soundOn?0.14:0,audioCtx.currentTime,0.9);const btn=document.getElementById('btn-sound');btn.classList.toggle('lit',soundOn);btn.textContent=soundOn?'🔊':'🌧';});
+
+function buildMenu(){const shuffled=[...MEDITATIONS].sort(()=>Math.random()-0.5);const c=document.getElementById('cards');c.innerHTML='';shuffled.forEach(med=>{const el=document.createElement('div');el.className='card';el.style.cssText=`background:${med.pal.bg};border-color:${med.pal.border};`;el.innerHTML=`<div class="card-top"><div class="card-title" style="color:${med.pal.accent}">${med.title}</div><div class="card-dur">${med.duration}</div></div><div class="card-tag">${med.tag}</div><div class="card-desc">${med.desc}</div>`;el.addEventListener('click',()=>startMed(med));c.appendChild(el);});}
+
+buildMenu();
+</script>
+</body>
+</html>

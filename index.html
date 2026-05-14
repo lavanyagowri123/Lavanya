@@ -1,30 +1,159 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Manifestation Journal</title>
-    <meta name="description" content="Your daily manifestation journaling space" />
-    <meta name="theme-color" content="#FFF9C4" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Morning Ritual</title>
+  <meta name="theme-color" content="#0d0b09">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <!-- PWA / iOS -->
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Journal" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    html, body {
+      height: 100%;
+      background: #0d0b09;
+      color: #e8ddd0;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      -webkit-font-smoothing: antialiased;
+    }
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    .page {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px 60px;
+      gap: 52px;
+    }
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+    header { text-align: center; }
+
+    .dot {
+      width: 7px; height: 7px;
+      background: #c4956a;
+      border-radius: 50%;
+      margin: 0 auto 22px;
+      opacity: 0.6;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: normal;
+      letter-spacing: 0.18em;
+      color: #c4956a;
+      margin-bottom: 10px;
+    }
+
+    .sub {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #4a4038;
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 24px 22px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.14s ease, opacity 0.14s ease;
+      cursor: pointer;
+    }
+    .card:active { transform: scale(0.972); opacity: 0.85; }
+
+    .card-m {
+      background: linear-gradient(150deg, #1d1209 0%, #0f0b07 100%);
+      border-color: rgba(196,149,106,0.18);
+    }
+    .card-j {
+      background: linear-gradient(150deg, #111820 0%, #090d14 100%);
+      border-color: rgba(107,158,200,0.18);
+    }
+
+    .card-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      width: 32px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .card-body { flex: 1; }
+
+    .card-title {
+      font-size: 1.08rem;
+      letter-spacing: 0.03em;
+      margin-bottom: 5px;
+    }
+    .card-m .card-title { color: #c4956a; }
+    .card-j .card-title { color: #6b9ec8; }
+
+    .card-desc {
+      font-size: 0.73rem;
+      color: #4a4038;
+      letter-spacing: 0.06em;
+      line-height: 1.5;
+    }
+
+    .card-arrow {
+      font-size: 0.85rem;
+      color: #2e2820;
+      flex-shrink: 0;
+    }
+
+    footer {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      color: #2e2820;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="dot"></div>
+      <h1>My morning ritual</h1>
+      <p class="sub">It&#8217;s my morning self&#8209;care routine</p>
+    </header>
+
+    <div class="cards">
+      <a href="/meditation" class="card card-m">
+        <div class="card-icon">✶</div>
+        <div class="card-body">
+          <div class="card-title">Meditate</div>
+          <div class="card-desc">Guided sessions &middot; 3&ndash;4 minutes</div>
+        </div>
+        <div class="card-arrow">&rarr;</div>
+      </a>
+
+      <a href="/journal" class="card card-j">
+        <div class="card-icon">✍️</div>
+        <div class="card-body">
+          <div class="card-title">Journal</div>
+          <div class="card-desc">Manifestation &amp; morning pages</div>
+        </div>
+        <div class="card-arrow">&rarr;</div>
+      </a>
+    </div>
+
+    <footer>Take care of yourself first.</footer>
+  </div>
+</body>
 </html>
