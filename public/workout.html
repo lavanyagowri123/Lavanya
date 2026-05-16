@@ -153,6 +153,32 @@
 </div>
 
 <script>
+/* ===== COMPLETION TRACKING ===== */
+function getMelbDateISO() {
+  return new Date().toLocaleDateString('sv', { timeZone: 'Australia/Melbourne' });
+}
+function _updateStreak(today) {
+  try {
+    const streak = JSON.parse(localStorage.getItem('stillspace_streak') || '{"count":0,"lastDate":""}');
+    if (streak.lastDate === today) return;
+    const prev = new Date(today + 'T00:00:00');
+    prev.setDate(prev.getDate() - 1);
+    const yesterday = prev.toISOString().slice(0, 10);
+    const newCount = streak.lastDate === yesterday ? streak.count + 1 : 1;
+    localStorage.setItem('stillspace_streak', JSON.stringify({ count: newCount, lastDate: today }));
+  } catch(e) {}
+}
+function markDone(type) {
+  try {
+    const today = getMelbDateISO();
+    let done = JSON.parse(localStorage.getItem('stillspace_done') || '{}');
+    if (done.date !== today) done = { date: today, move: false, meditate: false, mirror: false };
+    done[type] = true;
+    localStorage.setItem('stillspace_done', JSON.stringify(done));
+    if (done.move && done.meditate && done.mirror) _updateStreak(today);
+  } catch(e) {}
+}
+
 const CIRC = 2 * Math.PI * 78;
 
 const WORKOUTS = [
@@ -454,6 +480,7 @@ document.getElementById('btn-back').addEventListener('click', () => {
 function finishWorkout() {
   releaseWakeLock();
   activeWorkout = null;
+  markDone('move');
   show('done-screen');
   setTimeout(() => document.getElementById('done-glyph').classList.add('in'), 350);
   setTimeout(() => document.getElementById('done-words').classList.add('in'), 1200);

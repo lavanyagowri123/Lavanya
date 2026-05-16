@@ -4,6 +4,59 @@ export function getTodayKey() {
   return new Date().toLocaleDateString('sv', { timeZone: 'Australia/Melbourne' })
 }
 
+export function getMelbDate() {
+  return new Date().toLocaleDateString('sv', { timeZone: 'Australia/Melbourne' })
+}
+
+export function getTodayDone() {
+  const today = getMelbDate()
+  try {
+    const done = JSON.parse(localStorage.getItem('stillspace_done') || '{}')
+    if (done.date !== today) return { move: false, meditate: false, mirror: false }
+    return { move: !!done.move, meditate: !!done.meditate, mirror: !!done.mirror }
+  } catch {
+    return { move: false, meditate: false, mirror: false }
+  }
+}
+
+function _updateStreak(today) {
+  try {
+    const streak = JSON.parse(localStorage.getItem('stillspace_streak') || '{"count":0,"lastDate":""}')
+    if (streak.lastDate === today) return
+    const prev = new Date(today + 'T00:00:00')
+    prev.setDate(prev.getDate() - 1)
+    const yesterday = prev.toISOString().slice(0, 10)
+    const newCount = streak.lastDate === yesterday ? streak.count + 1 : 1
+    localStorage.setItem('stillspace_streak', JSON.stringify({ count: newCount, lastDate: today }))
+  } catch {}
+}
+
+export function markDone(type) {
+  const today = getMelbDate()
+  try {
+    let done = JSON.parse(localStorage.getItem('stillspace_done') || '{}')
+    if (done.date !== today) done = { date: today, move: false, meditate: false, mirror: false }
+    done[type] = true
+    localStorage.setItem('stillspace_done', JSON.stringify(done))
+    if (done.move && done.meditate && done.mirror) _updateStreak(today)
+  } catch {}
+}
+
+export function getStreakCount() {
+  try {
+    const today = getMelbDate()
+    const streak = JSON.parse(localStorage.getItem('stillspace_streak') || '{"count":0,"lastDate":""}')
+    if (!streak.count) return 0
+    const prev = new Date(today + 'T00:00:00')
+    prev.setDate(prev.getDate() - 1)
+    const yesterday = prev.toISOString().slice(0, 10)
+    if (streak.lastDate === today || streak.lastDate === yesterday) return streak.count
+    return 0
+  } catch {
+    return 0
+  }
+}
+
 export function formatDateDisplay(dateKey) {
   const [year, month, day] = dateKey.split('-').map(Number)
   const date = new Date(year, month - 1, day)
@@ -33,6 +86,7 @@ export function saveEntry(dateKey, text, sealed = false) {
   const entries = getAllEntries()
   entries[dateKey] = { text, sealed, savedAt: new Date().toISOString() }
   localStorage.setItem(ENTRIES_KEY, JSON.stringify(entries))
+  if (text.trim()) markDone('mirror')
 }
 
 export function getSortedDateKeys() {
@@ -63,6 +117,7 @@ export function saveTypedEntry(type, dateKey, data) {
   const all = getTypedEntries(type)
   all[dateKey] = { ...data, savedAt: new Date().toISOString() }
   localStorage.setItem(`journal_${type}_entries`, JSON.stringify(all))
+  markDone('mirror')
 }
 
 export function getTypedSortedKeys(type) {

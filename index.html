@@ -127,7 +127,8 @@
     <header>
       <div class="hero-dot"></div>
       <h1 class="hero-title">Still Space</h1>
-      <p class="tagline">Take care of yourself first.</p>
+      <div id="streak-wrap" style="display:none;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:#c4956a;margin-bottom:10px"></div>
+      <p class="tagline" id="tagline">Take care of yourself first.</p>
     </header>
 
     <div class="cards">
@@ -137,7 +138,7 @@
           <div class="card-title">Move</div>
           <div class="card-desc">10 min · today's workout changes daily</div>
         </div>
-        <div class="card-arrow">&rarr;</div>
+        <div class="card-arrow" id="arrow-move">&rarr;</div>
       </a>
 
       <a href="/meditation" class="card card-m">
@@ -146,7 +147,7 @@
           <div class="card-title">Meditate</div>
           <div class="card-desc">Guided sessions · 3–4 minutes</div>
         </div>
-        <div class="card-arrow">&rarr;</div>
+        <div class="card-arrow" id="arrow-med">&rarr;</div>
       </a>
 
       <a href="/journal" class="card card-j">
@@ -155,9 +156,62 @@
           <div class="card-title">Mirror</div>
           <div class="card-desc">Gratitude · scripting · self-inquiry</div>
         </div>
-        <div class="card-arrow">&rarr;</div>
+        <div class="card-arrow" id="arrow-mirror">&rarr;</div>
       </a>
     </div>
   </div>
+
+  <script>
+    (function () {
+      function getMelbDateISO() {
+        return new Date().toLocaleDateString('sv', { timeZone: 'Australia/Melbourne' });
+      }
+      var today = getMelbDateISO();
+
+      // Read done state
+      var done = { move: false, meditate: false, mirror: false };
+      try {
+        var raw = JSON.parse(localStorage.getItem('stillspace_done') || '{}');
+        if (raw.date === today) { done.move = !!raw.move; done.meditate = !!raw.meditate; done.mirror = !!raw.mirror; }
+      } catch(e) {}
+
+      // Read streak (only show if current — today or yesterday)
+      var streakCount = 0;
+      try {
+        var s = JSON.parse(localStorage.getItem('stillspace_streak') || '{}');
+        if (s.count) {
+          var prev = new Date(today + 'T00:00:00');
+          prev.setDate(prev.getDate() - 1);
+          var yesterday = prev.toISOString().slice(0, 10);
+          if (s.lastDate === today || s.lastDate === yesterday) streakCount = s.count;
+        }
+      } catch(e) {}
+
+      // Completion ticks
+      function tick(id) {
+        var el = document.getElementById(id);
+        if (el) { el.textContent = '✓'; el.style.color = '#c4956a'; el.style.fontSize = '1rem'; }
+      }
+      if (done.move)    tick('arrow-move');
+      if (done.meditate) tick('arrow-med');
+      if (done.mirror)  tick('arrow-mirror');
+
+      // Tagline celebration
+      var allDone = done.move && done.meditate && done.mirror;
+      if (allDone) {
+        var tl = document.getElementById('tagline');
+        if (tl) tl.textContent = 'You showed up today ✦';
+      }
+
+      // Streak badge
+      if (streakCount > 0) {
+        var sw = document.getElementById('streak-wrap');
+        if (sw) {
+          sw.textContent = streakCount + ' day' + (streakCount !== 1 ? 's' : '') + ' in a row ✦';
+          sw.style.display = 'block';
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
