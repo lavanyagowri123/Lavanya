@@ -15,7 +15,7 @@ import InfoModal from './InfoModal'
 
 const AUTOSAVE_DELAY = 1200
 
-export default function JournalPage() {
+export default function JournalPage({ onBack }) {
   const todayKey = getTodayKey()
   const dailyPrompt = getDailyPrompt()
   const [activeDate, setActiveDate] = useState(todayKey)
@@ -92,12 +92,16 @@ export default function JournalPage() {
           ✦ Manifestation Journal
         </span>
         <div className="flex items-center gap-4">
-          <a
-            href="/"
-            className="font-journal text-sm text-ink/50 hover:text-ink transition-colors"
-          >
-            ← Home
-          </a>
+          {onBack ? (
+            <button
+              onClick={onBack}
+              className="font-journal text-sm text-ink/50 hover:text-ink transition-colors bg-transparent border-none cursor-pointer"
+            >
+              ← Back
+            </button>
+          ) : (
+            <a href="/" className="font-journal text-sm text-ink/50 hover:text-ink transition-colors">← Home</a>
+          )}
           <NotificationToggle />
           <button
             onClick={() => setShowHistory(true)}
