@@ -198,7 +198,7 @@ const WORKOUTS = [
 ];
 
 /* ===== DAILY PICK ===== */
-const TODAY = new Date().toDateString();
+const TODAY = new Date().toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' });
 const saved = JSON.parse(localStorage.getItem('stillspace_workout') || '{}');
 let todayWorkout;
 if (saved.date === TODAY) {

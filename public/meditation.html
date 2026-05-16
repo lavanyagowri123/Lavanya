@@ -42,7 +42,10 @@
     .menu-hero h1 { font-size: 1.8rem; font-weight: normal; letter-spacing: 0.22em; color: #8a6218; margin-bottom: 10px; }
     .menu-hero p { font-size: 0.75rem; letter-spacing: 0.16em; color: #a89070; text-transform: uppercase; }
     .cards { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; }
+    .section-label { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: #a89070; padding: 0 4px; margin-bottom: 2px; }
+    .section-label-other { margin-top: 8px; }
     .card { border-radius: 20px; padding: 22px 20px 20px; cursor: pointer; border: 1px solid transparent; transition: transform 0.15s ease, opacity 0.15s ease; }
+    .card-today { border-width: 1.5px; }
     .card:active { transform: scale(0.974); opacity: 0.88; }
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
     .card-title { font-size: 1.05rem; font-weight: normal; letter-spacing: 0.02em; line-height: 1.3; }
@@ -255,6 +258,23 @@ const AUDIO_MAP = {
   letgo:      '/audio/let-go.mp3'
 };
 
+/* ===== MELBOURNE DATE ===== */
+function getMelbDate() {
+  return new Date().toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' });
+}
+
+/* ===== DAILY PICK ===== */
+const TODAY_MEL = getMelbDate();
+const savedMed = JSON.parse(localStorage.getItem('stillspace_med') || '{}');
+let todayMed;
+if (savedMed.date === TODAY_MEL) {
+  todayMed = MEDITATIONS.find(m => m.id === savedMed.id) || MEDITATIONS[0];
+} else {
+  const pool = MEDITATIONS.filter(m => m.id !== savedMed.id);
+  todayMed = pool[Math.floor(Math.random() * pool.length)];
+  localStorage.setItem('stillspace_med', JSON.stringify({ date: TODAY_MEL, id: todayMed.id }));
+}
+
 /* ===== STATE ===== */
 let cur = null, paused = false;
 let soundOn = false, audioCtx = null, noiseGain = null;
@@ -403,18 +423,30 @@ document.getElementById('btn-sound').addEventListener('click', () => {
 });
 
 /* ===== MENU ===== */
+function makeCard(med, isToday) {
+  const el = document.createElement('div');
+  el.className = 'card' + (isToday ? ' card-today' : '');
+  const border = isToday ? hexToRgba(med.pal.accent, 0.42) : med.pal.border;
+  el.style.cssText = `background:${med.pal.cardBg};border-color:${border};`;
+  el.innerHTML = `<div class="card-top"><div class="card-title" style="color:${med.pal.accent}">${med.title}</div><div class="card-dur">${med.duration}</div></div><div class="card-tag" style="color:#a89070;opacity:1">${med.tag}</div><div class="card-desc">${med.desc}</div>`;
+  el.addEventListener('click', () => startMed(med));
+  return el;
+}
+
+function label(text, extra) {
+  const el = document.createElement('div');
+  el.className = 'section-label' + (extra ? ' ' + extra : '');
+  el.textContent = text;
+  return el;
+}
+
 function buildMenu() {
-  const shuffled = [...MEDITATIONS].sort(() => Math.random() - 0.5);
   const c = document.getElementById('cards');
   c.innerHTML = '';
-  shuffled.forEach(med => {
-    const el = document.createElement('div');
-    el.className = 'card';
-    el.style.cssText = `background:${med.pal.cardBg};border-color:${med.pal.border};`;
-    el.innerHTML = `<div class="card-top"><div class="card-title" style="color:${med.pal.accent}">${med.title}</div><div class="card-dur">${med.duration}</div></div><div class="card-tag" style="color:#a89070;opacity:1">${med.tag}</div><div class="card-desc">${med.desc}</div>`;
-    el.addEventListener('click', () => startMed(med));
-    c.appendChild(el);
-  });
+  c.appendChild(label("today's practice"));
+  c.appendChild(makeCard(todayMed, true));
+  c.appendChild(label('or choose another', 'section-label-other'));
+  MEDITATIONS.filter(m => m.id !== todayMed.id).forEach(m => c.appendChild(makeCard(m, false)));
 }
 
 buildMenu();
