@@ -59,45 +59,45 @@
       background: inherit;
     }
     .btn-back {
-      background: none; border: 1px solid rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.35); border-radius: 50%;
+      background: none; border: 1px solid rgba(44,31,20,0.15);
+      color: rgba(44,31,20,0.35); border-radius: 50%;
       width: 36px; height: 36px; font-size: 1rem;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; transition: color 0.2s, border-color 0.2s;
       -webkit-appearance: none; line-height: 1;
     }
-    .btn-back:active { color: var(--text); border-color: rgba(255,255,255,0.28); }
+    .btn-back:active { color: #2c1f14; border-color: rgba(44,31,20,0.4); }
     .med-meta { flex: 1; min-width: 0; }
     .med-meta h2 { font-size: 0.88rem; font-weight: normal; letter-spacing: 0.06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .med-meta span { font-size: 0.66rem; color: var(--muted); letter-spacing: 0.08em; }
-    .prog-wrap { height: 1px; background: rgba(255,255,255,0.06); margin: 0 20px; }
+    .prog-wrap { height: 1px; background: rgba(44,31,20,0.1); margin: 0 20px; }
     .prog-fill { height: 100%; width: 0%; transition: width 0.8s linear; }
     .lines-area { padding: 44px 28px 40px; display: flex; flex-direction: column; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .line {
       font-size: 1rem; line-height: 1.95; text-align: center;
-      color: rgba(240,232,220,0.38);
+      color: rgba(44,31,20,0.25);
       transition: color 0.55s ease, font-size 0.45s ease;
       padding: 1px 0;
     }
-    .line.active { color: #f0e8dc; font-size: 1.12rem; }
-    .line.past { color: rgba(240,232,220,0.28); font-size: 0.92rem; }
+    .line.active { color: #2c1f14; font-size: 1.12rem; }
+    .line.past { color: rgba(44,31,20,0.18); font-size: 0.92rem; }
 
     .controls {
       flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       gap: 40px;
       padding: 16px 36px 40px;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(44,31,20,0.07);
       background: inherit;
     }
     .btn-ctrl {
-      background: none; border: 1px solid rgba(255,255,255,0.11);
-      color: rgba(255,255,255,0.45); border-radius: 50%;
+      background: none; border: 1px solid rgba(44,31,20,0.14);
+      color: rgba(44,31,20,0.4); border-radius: 50%;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       transition: all 0.2s ease; -webkit-appearance: none;
     }
-    .btn-ctrl:active { background: rgba(255,255,255,0.07); }
-    .btn-ctrl.lit { border-color: rgba(255,255,255,0.28); color: rgba(255,255,255,0.78); background: rgba(255,255,255,0.05); }
+    .btn-ctrl:active { background: rgba(44,31,20,0.06); }
+    .btn-ctrl.lit { border-color: rgba(44,31,20,0.35); color: rgba(44,31,20,0.75); background: rgba(44,31,20,0.05); }
     .btn-sound { width: 44px; height: 44px; font-size: 1.05rem; }
     .btn-pause { width: 62px; height: 62px; font-size: 1.5rem; }
 
@@ -174,23 +174,23 @@
 <script>
 const MEDITATIONS = [
   { id:'grounding', title:'5-4-3-2-1 Grounding', tag:'Somatic · Sensory', desc:'Pulls you into the present moment through your senses. Good for anxiety spikes.', duration:'4 min',
-    pal:{ bg:'linear-gradient(150deg,#2d1e0e 0%,#1a1108 100%)', cardBg:'#fdf3e6', border:'rgba(196,149,106,0.2)', accent:'#c4956a', bar:'#c4956a' },
+    pal:{ bg:'linear-gradient(150deg,#fef6ec 0%,#faf5ef 100%)', cardBg:'#fdf3e6', border:'rgba(196,149,106,0.2)', accent:'#c4956a', bar:'#c4956a' },
     lines:['Find a comfortable position.','Gently close your eyes if that feels safe.','Take a slow, deep breath in.','And let it go.','...','We are going to anchor you in this moment.','Right here. Right now.','...','When you\'re ready, open your eyes softly.','Look around and silently name five things you can see.','A shape. A colour. A shadow. A texture. A light.','Take your time with each one.','...','Now notice four things you can physically feel.','The weight of your body being held.','The temperature of the air against your skin.','The sensation of your hands, wherever they rest.','Let each one ground you a little further.','...','Three things you can hear.','Listen past the obvious sounds.','Find something underneath — a hum, a rustle, a distant tone.','...','Two things you can smell.','Or simply notice the quality of air as it enters.','...','And one thing you can taste.','Even the faint taste of your own breath.','...','You are here.','Not in the past. Not in the future.','In this body. In this moment.','...','Take one more deep breath.','And as you exhale — let any tension dissolve.','You are safe. You are present.']
   },
   { id:'box', title:'Box Breathing', tag:'Breath · Body', desc:'Four counts in, hold, out, hold. No thinking required. Good for overwhelm.', duration:'3 min',
-    pal:{ bg:'linear-gradient(150deg,#132333 0%,#0c1620 100%)', cardBg:'#edf3fa', border:'rgba(107,158,200,0.2)', accent:'#6b9ec8', bar:'#6b9ec8' },
+    pal:{ bg:'linear-gradient(150deg,#eef5fc 0%,#f0f5ff 100%)', cardBg:'#edf3fa', border:'rgba(107,158,200,0.2)', accent:'#6b9ec8', bar:'#6b9ec8' },
     lines:['Sit comfortably. Hands resting gently.','We\'ll breathe together in a simple rhythm.','Let your body lead. Your mind can rest.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Good.','...','Again — breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Notice how your nervous system begins to soften.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','One more round.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Let your breath return to its natural rhythm.','Feel the steadiness that is always here.','This rhythm belongs to you.']
   },
   { id:'fear', title:'Fear Release', tag:'Acknowledge · Breathe · Release', desc:'Name the fear, breathe through it, let it pass. For when the alarm fires.', duration:'4 min',
-    pal:{ bg:'linear-gradient(150deg,#1e1229 0%,#120d1c 100%)', cardBg:'#f0edf8', border:'rgba(155,126,200,0.2)', accent:'#9b7ec8', bar:'#9b7ec8' },
+    pal:{ bg:'linear-gradient(150deg,#f2eefa 0%,#f5f2ff 100%)', cardBg:'#f0edf8', border:'rgba(155,126,200,0.2)', accent:'#9b7ec8', bar:'#9b7ec8' },
     lines:['Something has triggered the alarm inside you.','That\'s okay.','Fear is not your enemy.','It\'s a part of you trying to keep you safe.','...','Take a slow breath in.','And out.','...','Place one hand on your chest if you\'d like.','Feel your own heartbeat.','It\'s still here. You\'re still here.','...','Quietly, just to yourself — name what you\'re afraid of.','Don\'t push it away. Let it exist for a moment.','Give it a name.','...','Now breathe in — slowly.','And as you breathe out, imagine that fear as a colour or a shape.','Watch it as you exhale.','It doesn\'t have to leave. Just notice it.','...','Fear often tells a story about what might happen.','But right now, in this breath, you are okay.','...','Breathe in again.','And out.','...','You don\'t have to fight the fear.','You don\'t have to fix it right now.','You only have to breathe.','...','One more breath — long and slow.','And as you exhale — let it move through you.','Not stay. Move.','...','You are bigger than this feeling.','It will pass. And you will still be here.']
   },
   { id:'compassion', title:'Self Compassion Reset', tag:'Forgiveness · Kindness', desc:'For moments you\'ve snapped or fallen short. A gentle return to yourself.', duration:'4 min',
-    pal:{ bg:'linear-gradient(150deg,#2d1220 0%,#1c0d16 100%)', cardBg:'#faedf3', border:'rgba(200,126,155,0.2)', accent:'#c87e9b', bar:'#c87e9b' },
+    pal:{ bg:'linear-gradient(150deg,#fceef4 0%,#fff0f8 100%)', cardBg:'#faedf3', border:'rgba(200,126,155,0.2)', accent:'#c87e9b', bar:'#c87e9b' },
     lines:['Something happened.','Maybe you said something you wish you hadn\'t.','Maybe you fell short of who you want to be.','...','I want you to take a breath before you do anything else.','Breathe in.','And out.','...','You are not a bad person.','You are a person who is tired, or overwhelmed, or scared.','And sometimes those feelings come out sideways.','...','If there\'s someone you\'ve hurt — you\'ll tend to that.','You already know you will.','But right now, we\'re tending to you.','...','Place your hand on your heart.','Feel the warmth of your own touch.','...','Breathe in — and silently say to yourself:','This is hard.','I am human.','I am doing my best.','...','Say it again, gently.','This is hard.','I am human.','I am doing my best.','...','You are allowed to be imperfect.','Growth is not a straight line.','The fact that this moment matters to you —','that is who you are.','...','Take one more breath.','And let yourself be held — in your own kindness.']
   },
   { id:'letgo', title:'Let It Go', tag:'Release · Open Hands', desc:'For when you\'re gripping an outcome. Loosen your hold, trust the unfolding.', duration:'4 min',
-    pal:{ bg:'linear-gradient(150deg,#152a1c 0%,#0d1a11 100%)', cardBg:'#edf8f1', border:'rgba(126,200,155,0.2)', accent:'#7ec89b', bar:'#7ec89b' },
+    pal:{ bg:'linear-gradient(150deg,#eef8f2 0%,#f2fcf5 100%)', cardBg:'#edf8f1', border:'rgba(126,200,155,0.2)', accent:'#7ec89b', bar:'#7ec89b' },
     lines:['There\'s something you\'re holding onto.','An outcome you\'ve been steering toward.','A result you need to go a certain way.','...','Take a breath.','And notice — where do you feel that grip in your body?','In your jaw? Your shoulders? Your chest?','...','Breathe in slowly.','And as you exhale, soften that place — just slightly.','Not letting go yet. Just softening.','...','Here is something true:','You have done what you can do.','You have shown up. You have tried.','...','The rest — the outcome, the response, the result —','lives outside your hands.','Holding it tightly doesn\'t change what will happen.','It only costs you peace.','...','If you\'d like — hold your hands out, palms up.','Imagine placing what you\'re holding into open palms.','Not throwing it away.','Just releasing your grip.','...','Breathe in.','And as you breathe out — open your hands.','Physically, if you can.','...','What happens is allowed to happen.','You are allowed to not know.','You are allowed to trust.','...','Take one more breath.','And let the future be what it will be.','You are here. That is enough.']
   }
 ];
@@ -227,7 +227,6 @@ document.addEventListener('visibilitychange', () => {
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.querySelector('.home-link').classList.toggle('on-dark', id === 'med-screen');
 }
 
 /* ===== LINE TIMING ===== */
