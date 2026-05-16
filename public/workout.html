@@ -33,13 +33,13 @@
     /* ACTIVE */
     #active-screen { overflow: hidden; }
     .act-header { flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 22px 20px 14px; background: inherit; }
-    .btn-back { background: none; border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); border-radius: 50%; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: color 0.2s, border-color 0.2s; -webkit-appearance: none; line-height: 1; }
-    .btn-back:active { color: var(--text); border-color: rgba(255,255,255,0.28); }
+    .btn-back { background: none; border: 1px solid rgba(44,31,20,0.15); color: rgba(44,31,20,0.35); border-radius: 50%; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: color 0.2s, border-color 0.2s; -webkit-appearance: none; line-height: 1; }
+    .btn-back:active { color: #2c1f14; border-color: rgba(44,31,20,0.4); }
     .act-meta { flex: 1; min-width: 0; }
     .act-meta-name { font-size: 0.88rem; font-weight: normal; letter-spacing: 0.06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .act-meta-sub { font-size: 0.64rem; color: var(--muted); letter-spacing: 0.08em; margin-top: 2px; }
 
-    .prog-wrap { flex-shrink: 0; height: 1px; background: rgba(255,255,255,0.06); }
+    .prog-wrap { flex-shrink: 0; height: 1px; background: rgba(44,31,20,0.1); }
     .prog-fill { height: 100%; width: 0%; transition: width 1s linear; }
 
     .exercise-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 36px; text-align: center; overflow: hidden; }
@@ -49,16 +49,16 @@
 
     .ring-wrap { width: 180px; height: 180px; margin-bottom: 28px; flex-shrink: 0; }
     .ring-svg { width: 100%; height: 100%; }
-    .ring-track { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 3; }
+    .ring-track { fill: none; stroke: rgba(44,31,20,0.08); stroke-width: 3; }
     .ring-fill { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
-    .ring-num { font-family: Georgia, serif; fill: var(--text); dominant-baseline: central; text-anchor: middle; }
+    .ring-num { font-family: Georgia, serif; fill: #2c1f14; dominant-baseline: central; text-anchor: middle; }
 
     .ex-name { font-size: 1.3rem; font-weight: normal; letter-spacing: 0.04em; line-height: 1.35; margin-bottom: 14px; }
     .ex-note { font-size: 0.78rem; line-height: 1.8; color: var(--muted); max-width: 280px; }
 
-    .act-controls { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 16px 36px 40px; border-top: 1px solid rgba(255,255,255,0.05); background: inherit; }
-    .btn-ctrl { background: none; border: 1px solid rgba(255,255,255,0.11); color: rgba(255,255,255,0.45); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; -webkit-appearance: none; }
-    .btn-ctrl:active { background: rgba(255,255,255,0.07); }
+    .act-controls { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 16px 36px 40px; border-top: 1px solid rgba(44,31,20,0.07); background: inherit; }
+    .btn-ctrl { background: none; border: 1px solid rgba(44,31,20,0.14); color: rgba(44,31,20,0.4); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; -webkit-appearance: none; }
+    .btn-ctrl:active { background: rgba(44,31,20,0.06); }
     .btn-pause { width: 62px; height: 62px; font-size: 1.5rem; }
 
     /* DONE */
@@ -126,7 +126,7 @@ const CIRC = 2 * Math.PI * 78; // ≈ 490.1
 const WORKOUTS = [
   {
     id: 'hiit', name: 'HIIT Cardio', accent: '#d4714a',
-    bg: 'linear-gradient(150deg,#2a1209 0%,#180b05 100%)',
+    bg: 'linear-gradient(150deg,#fef3ee 0%,#faf5ef 100%)',
     desc: 'High-intensity intervals to get your heart pumping and lungs working.',
     exercises: [
       { name: 'Jumping Jacks',    note: 'Land softly, keep a steady rhythm.',                           work: 45, rest: 15 },
@@ -143,7 +143,7 @@ const WORKOUTS = [
   },
   {
     id: 'strength', name: 'Bodyweight Strength', accent: '#7ec89b',
-    bg: 'linear-gradient(150deg,#0d1c12 0%,#080f09 100%)',
+    bg: 'linear-gradient(150deg,#eef8f2 0%,#f2fcf5 100%)',
     desc: 'Build functional strength using only your body weight and a little floor space.',
     exercises: [
       { name: 'Squats',           note: 'Feet shoulder-width, chest up, push knees out.',               work: 45, rest: 15 },
@@ -160,7 +160,7 @@ const WORKOUTS = [
   },
   {
     id: 'core', name: 'Core Flow', accent: '#9b7ec8',
-    bg: 'linear-gradient(150deg,#1a1228 0%,#100b1c 100%)',
+    bg: 'linear-gradient(150deg,#f2eefa 0%,#f5f2ff 100%)',
     desc: 'Strengthen your centre from every angle. No equipment needed.',
     exercises: [
       { name: 'Crunches',           note: 'Hands light behind head, curl chest toward knees.',          work: 45, rest: 15 },
@@ -177,7 +177,7 @@ const WORKOUTS = [
   },
   {
     id: 'surya', name: 'Surya Namaskar', accent: '#c4956a',
-    bg: 'linear-gradient(150deg,#2d1e0e 0%,#1a1108 100%)',
+    bg: 'linear-gradient(150deg,#fef6ec 0%,#faf5ef 100%)',
     desc: 'Five rounds of sun salutation — flowing movement, breath and body as one.',
     rounds: 5,
     exercises: [
@@ -230,7 +230,6 @@ document.addEventListener('visibilitychange', () => {
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.querySelector('.home-link').classList.toggle('on-dark', id === 'active-screen');
 }
 
 /* ===== BUILD STEPS ===== */
@@ -281,7 +280,7 @@ function loadStep(idx) {
   if (step.phase === 'rest') {
     phaseEl.textContent = 'Rest';
     phaseEl.classList.add('rest-mode');
-    document.getElementById('ring-fill').style.stroke = 'rgba(255,255,255,0.2)';
+    document.getElementById('ring-fill').style.stroke = 'rgba(44,31,20,0.15)';
   } else if (step.phase === 'pose') {
     phaseEl.textContent = `Round ${step.roundNum} of ${step.totalRounds}`;
     phaseEl.classList.remove('rest-mode');
