@@ -5,15 +5,25 @@ import { formatDateDisplay, getTodayKey } from '../utils/storage'
 const STEPS = [
   {
     icon: '✦',
-    heading: 'Welcome to your Manifestation Journal',
-    body: `This is a space that belongs entirely to you. No notifications pulling you away, no audience, no performance. Just you, your intentions, and the page.`,
+    heading: 'Welcome to Still Space',
+    body: 'This is a space that belongs entirely to you. No notifications pulling you away, no audience, no performance. Just you, your intentions, and the page.',
   },
   {
-    icon: '🖊',
-    heading: 'Why this journal exists',
-    body: `When you write your intentions in the past tense — as if they have already happened — your brain's reticular activating system begins filtering your world to find evidence that confirms them. You start noticing what you once missed. The writing is the practice.`,
+    icon: '◈',
+    heading: 'Three practices, one morning',
+    body: 'Move your body, settle your mind, and write what matters. Each one takes less than ten minutes. Together they change how you carry the day.',
   },
 ]
+
+const S = {
+  overlay: { position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#faf5ef', fontFamily: "Georgia, 'Times New Roman', serif" },
+  card: { background: '#fdf5e6', border: '1px solid rgba(196,149,106,0.22)', borderRadius: 20, padding: '36px 28px', textAlign: 'center', marginBottom: 16 },
+  icon: { fontSize: '2rem', color: '#c4956a', marginBottom: 20, opacity: 0.75 },
+  heading: { fontSize: '1.15rem', fontWeight: 'normal', letterSpacing: '0.04em', color: '#6b4c2a', marginBottom: 14, lineHeight: 1.4 },
+  body: { fontSize: '0.82rem', lineHeight: 1.8, color: '#a89070' },
+  btn: { width: '100%', padding: '14px', background: 'none', border: '1px solid rgba(44,31,20,0.22)', borderRadius: 40, fontFamily: "Georgia, 'Times New Roman', serif", fontSize: '0.78rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(44,31,20,0.55)', cursor: 'pointer', WebkitAppearance: 'none' },
+  btnBack: { marginTop: 10, width: '100%', padding: '10px', background: 'none', border: 'none', fontFamily: "Georgia, 'Times New Roman', serif", fontSize: '0.72rem', letterSpacing: '0.1em', color: 'rgba(44,31,20,0.3)', cursor: 'pointer', WebkitAppearance: 'none' },
+}
 
 export default function WelcomeScreen({ onDone }) {
   const [step, setStep] = useState(0)
@@ -23,26 +33,17 @@ export default function WelcomeScreen({ onDone }) {
 
   if (showAffirmation) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-        <div className="absolute inset-0 bg-ink-dark/15 backdrop-blur-sm" />
-        <div className="relative z-10 w-full max-w-sm animate-fade-in text-center">
-          <p className="font-journal text-sm text-ink/50 mb-6">{today}</p>
-          <div className="bg-paper border-2 border-ink/15 rounded-2xl px-8 py-10 shadow-xl paper-texture mb-5">
-            <div className="text-3xl mb-4">✦</div>
-            <p className="font-journal text-sm text-ink/50 italic mb-6">
+      <div style={S.overlay}>
+        <div style={{ width: '100%', maxWidth: 360, textAlign: 'center' }}>
+          <p style={{ fontSize: '0.62rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#a89070', marginBottom: 24 }}>{today}</p>
+          <div style={S.card}>
+            <div style={S.icon}>✦</div>
+            <p style={{ fontSize: '0.78rem', lineHeight: 1.7, color: '#a89070', fontStyle: 'italic', marginBottom: 20 }}>
               This space is yours. Take a breath and begin.
             </p>
-            <p className="font-journal text-lg font-bold text-ink leading-relaxed">
-              "{affirmation}"
-            </p>
+            <p style={{ fontSize: '1.05rem', lineHeight: 1.85, color: '#6b4c2a' }}>"{affirmation}"</p>
           </div>
-          <button
-            onClick={onDone}
-            className="w-full py-3 rounded-full bg-ink text-paper font-journal text-base
-                       hover:bg-ink-dark transition-all duration-200 shadow-md"
-          >
-            Begin journalling ✦
-          </button>
+          <button onClick={onDone} style={S.btn}>Begin ✦</button>
         </div>
       </div>
     )
@@ -51,45 +52,20 @@ export default function WelcomeScreen({ onDone }) {
   const current = STEPS[step]
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 paper-texture">
-      <div className="absolute inset-0 bg-paper" />
-      <div className="relative z-10 w-full max-w-sm animate-fade-in">
-        {/* Progress dots */}
-        <div className="flex justify-center gap-2 mb-8">
-          {[...STEPS, 'affirmation'].map((_, i) => (
-            <div
-              key={i}
-              className={`rounded-full transition-all duration-300 ${
-                i === step ? 'w-6 h-2 bg-ink' : i < step ? 'w-2 h-2 bg-ink/40' : 'w-2 h-2 bg-ink/15'
-              }`}
-            />
+    <div style={S.overlay}>
+      <div style={{ width: '100%', maxWidth: 360 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 32 }}>
+          {Array.from({ length: STEPS.length + 1 }).map((_, i) => (
+            <div key={i} style={{ borderRadius: 9999, transition: 'all 0.3s', width: i === step ? 24 : 8, height: 8, background: i === step ? '#c4956a' : i < step ? 'rgba(196,149,106,0.4)' : 'rgba(44,31,20,0.12)' }} />
           ))}
         </div>
-
-        <div className="bg-paper border-2 border-ink/15 rounded-2xl p-8 shadow-lg text-center">
-          <div className="text-5xl mb-5">{current.icon}</div>
-          <h2 className="font-journal font-bold text-xl text-ink mb-4 leading-snug">
-            {current.heading}
-          </h2>
-          <p className="font-journal text-sm text-ink/75 leading-relaxed mb-8">
-            {current.body}
-          </p>
-          <button
-            onClick={() => setStep(s => s + 1)}
-            className="w-full py-3 rounded-full bg-ink text-paper font-journal text-base
-                       hover:bg-ink-dark transition-all duration-200 shadow-md"
-          >
-            Continue
-          </button>
-          {step > 0 && (
-            <button
-              onClick={() => setStep(s => s - 1)}
-              className="mt-3 w-full py-2 font-journal text-sm text-ink/40 hover:text-ink transition-colors"
-            >
-              ← Back
-            </button>
-          )}
+        <div style={S.card}>
+          <div style={S.icon}>{current.icon}</div>
+          <h2 style={S.heading}>{current.heading}</h2>
+          <p style={S.body}>{current.body}</p>
         </div>
+        <button onClick={() => setStep(s => s + 1)} style={S.btn}>Continue</button>
+        {step > 0 && <button onClick={() => setStep(s => s - 1)} style={S.btnBack}>← Back</button>}
       </div>
     </div>
   )
