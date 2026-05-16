@@ -1,0 +1,10 @@
+{
+  "buildCommand": "vite build",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/workout", "destination": "/workout.html" },
+    { "source": "/meditation", "destination": "/meditation.html" },
+    { "source": "/journal", "destination": "/journal.html" }
+  ]
+}
