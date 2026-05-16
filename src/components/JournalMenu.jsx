@@ -94,7 +94,7 @@ export default function JournalMenu({ onSelect }) {
 
   return (
     <div style={{ minHeight: '100vh', background: '#faf5ef', color: '#2c1f14', fontFamily: "Georgia, 'Times New Roman', serif", WebkitFontSmoothing: 'antialiased', overflowY: 'auto' }}>
-      <header style={{ padding: '22px 20px 16px', display: 'flex', justifyContent: 'flex-end', borderBottom: '1px solid rgba(44,31,20,0.07)' }}>
+      <header style={{ padding: '22px 20px 16px', display: 'flex', justifyContent: 'flex-end' }}>
         <a href="/" style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(44,31,20,0.3)', textDecoration: 'none' }}>Home</a>
       </header>
 
