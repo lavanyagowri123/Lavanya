@@ -92,6 +92,12 @@ export default function JournalPage() {
           ✦ Manifestation Journal
         </span>
         <div className="flex items-center gap-4">
+          <a
+            href="/"
+            className="font-journal text-sm text-ink/50 hover:text-ink transition-colors"
+          >
+            ← Home
+          </a>
           <NotificationToggle />
           <button
             onClick={() => setShowHistory(true)}
