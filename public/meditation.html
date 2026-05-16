@@ -72,7 +72,7 @@
     .med-meta h2 { font-size: 0.88rem; font-weight: normal; letter-spacing: 0.06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .med-meta span { font-size: 0.66rem; color: var(--muted); letter-spacing: 0.08em; }
     .prog-wrap { height: 1px; background: rgba(255,255,255,0.06); margin: 0 20px; }
-    .prog-fill { height: 100%; width: 0%; transition: width 1.4s ease; }
+    .prog-fill { height: 100%; width: 0%; transition: width 0.8s linear; }
     .lines-area { padding: 44px 28px 20px; display: flex; flex-direction: column; min-height: calc(100vh - 160px); }
     .line {
       font-size: 1rem; line-height: 1.95; text-align: center;
@@ -85,7 +85,8 @@
 
     .controls {
       position: sticky; bottom: 0;
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: center; justify-content: center;
+      gap: 40px;
       padding: 18px 36px 38px;
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       background: inherit;
@@ -100,7 +101,6 @@
     .btn-ctrl.lit { border-color: rgba(255,255,255,0.28); color: rgba(255,255,255,0.78); background: rgba(255,255,255,0.05); }
     .btn-sound { width: 44px; height: 44px; font-size: 1.05rem; }
     .btn-pause { width: 62px; height: 62px; font-size: 1.5rem; }
-    .btn-voice { width: 44px; height: 44px; font-size: 1rem; }
 
     /* ---- CLOSING ---- */
     #closing-screen { align-items: center; justify-content: center; text-align: center; padding: 40px 32px; background: var(--bg); }
@@ -129,65 +129,6 @@
       color: rgba(255,255,255,0.18); text-decoration: none; transition: color 0.2s;
     }
     .home-link:active { color: rgba(255,255,255,0.5); }
-
-    /* ---- VOICE PICKER ---- */
-    .v-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 200;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.28s ease;
-    }
-    .v-overlay.open { opacity: 1; pointer-events: all; }
-
-    .v-sheet {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #171310;
-      border-radius: 22px 22px 0 0;
-      border-top: 1px solid rgba(255,255,255,0.07);
-      z-index: 201;
-      transform: translateY(100%);
-      transition: transform 0.34s cubic-bezier(0.32,0.72,0,1);
-      max-height: 72vh;
-      display: flex; flex-direction: column;
-    }
-    .v-sheet.open { transform: translateY(0); }
-
-    .v-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.12); border-radius: 2px; margin: 14px auto 0; flex-shrink: 0; }
-
-    .v-header {
-      padding: 18px 24px 12px;
-      flex-shrink: 0;
-    }
-    .v-header-title {
-      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted);
-    }
-    .v-header-sub {
-      font-size: 0.72rem; color: rgba(255,255,255,0.25); margin-top: 4px; line-height: 1.5;
-    }
-
-    .v-list { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 0 40px; }
-
-    .v-item {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 24px;
-      cursor: pointer;
-      transition: background 0.12s;
-    }
-    .v-item:active { background: rgba(255,255,255,0.04); }
-    .v-item-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.2);
-      flex-shrink: 0;
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .v-item.selected .v-item-dot { background: var(--accent); border-color: var(--accent); }
-    .v-item-info { flex: 1; min-width: 0; }
-    .v-item-name { font-size: 0.9rem; color: rgba(255,255,255,0.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .v-item.selected .v-item-name { color: var(--accent); }
-    .v-item-lang { font-size: 0.62rem; letter-spacing: 0.06em; color: var(--muted); margin-top: 2px; }
-    .v-preview { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.2); flex-shrink: 0; }
-    .v-item:active .v-preview { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -218,7 +159,6 @@
   <div class="controls">
     <button class="btn-ctrl btn-sound" id="btn-sound">🌧</button>
     <button class="btn-ctrl btn-pause" id="btn-pause">⏸</button>
-    <button class="btn-ctrl btn-voice" id="btn-voice" title="Choose voice">🎤</button>
   </div>
 </div>
 
@@ -229,46 +169,46 @@
   <button class="btn-return" id="btn-return">Return</button>
 </div>
 
-<!-- VOICE PICKER -->
-<div class="v-overlay" id="v-overlay"></div>
-<div class="v-sheet" id="v-sheet">
-  <div class="v-handle"></div>
-  <div class="v-header">
-    <div class="v-header-title">Choose a voice</div>
-    <div class="v-header-sub">Tap any voice to preview it. Your choice is saved.</div>
-  </div>
-  <div class="v-list" id="v-list"></div>
-</div>
+<audio id="med-audio" preload="auto"></audio>
 
 <script>
 const MEDITATIONS = [
   { id:'grounding', title:'5-4-3-2-1 Grounding', tag:'Somatic · Sensory', desc:'Pulls you into the present moment through your senses. Good for anxiety spikes.', duration:'4 min',
     pal:{ bg:'linear-gradient(150deg,#1d1209 0%,#0f0b07 100%)', border:'rgba(196,149,106,0.18)', accent:'#c4956a', bar:'#c4956a' },
-    lines:['Find a comfortable position.','Gently close your eyes if that feels safe.','Take a slow, deep breath in.','And let it go.','...','We are going to anchor you in this moment.','Right here. Right now.','...','When you’re ready, open your eyes softly.','Look around and silently name five things you can see.','A shape. A colour. A shadow. A texture. A light.','Take your time with each one.','...','Now notice four things you can physically feel.','The weight of your body being held.','The temperature of the air against your skin.','The sensation of your hands, wherever they rest.','Let each one ground you a little further.','...','Three things you can hear.','Listen past the obvious sounds.','Find something underneath — a hum, a rustle, a distant tone.','...','Two things you can smell.','Or simply notice the quality of air as it enters.','...','And one thing you can taste.','Even the faint taste of your own breath.','...','You are here.','Not in the past. Not in the future.','In this body. In this moment.','...','Take one more deep breath.','And as you exhale — let any tension dissolve.','You are safe. You are present.']
+    lines:['Find a comfortable position.','Gently close your eyes if that feels safe.','Take a slow, deep breath in.','And let it go.','...','We are going to anchor you in this moment.','Right here. Right now.','...','When you\'re ready, open your eyes softly.','Look around and silently name five things you can see.','A shape. A colour. A shadow. A texture. A light.','Take your time with each one.','...','Now notice four things you can physically feel.','The weight of your body being held.','The temperature of the air against your skin.','The sensation of your hands, wherever they rest.','Let each one ground you a little further.','...','Three things you can hear.','Listen past the obvious sounds.','Find something underneath — a hum, a rustle, a distant tone.','...','Two things you can smell.','Or simply notice the quality of air as it enters.','...','And one thing you can taste.','Even the faint taste of your own breath.','...','You are here.','Not in the past. Not in the future.','In this body. In this moment.','...','Take one more deep breath.','And as you exhale — let any tension dissolve.','You are safe. You are present.']
   },
   { id:'box', title:'Box Breathing', tag:'Breath · Body', desc:'Four counts in, hold, out, hold. No thinking required. Good for overwhelm.', duration:'3 min',
     pal:{ bg:'linear-gradient(150deg,#0c1820 0%,#080d13 100%)', border:'rgba(107,158,200,0.18)', accent:'#6b9ec8', bar:'#6b9ec8' },
-    lines:['Sit comfortably. Hands resting gently.','We’ll breathe together in a simple rhythm.','Let your body lead. Your mind can rest.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Good.','...','Again — breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Notice how your nervous system begins to soften.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','One more round.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Let your breath return to its natural rhythm.','Feel the steadiness that is always here.','This rhythm belongs to you.']
+    lines:['Sit comfortably. Hands resting gently.','We\'ll breathe together in a simple rhythm.','Let your body lead. Your mind can rest.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Good.','...','Again — breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Notice how your nervous system begins to soften.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','One more round.','...','Breathe in — two — three — four.','Hold — two — three — four.','Breathe out — two — three — four.','Hold — two — three — four.','...','Let your breath return to its natural rhythm.','Feel the steadiness that is always here.','This rhythm belongs to you.']
   },
   { id:'fear', title:'Fear Release', tag:'Acknowledge · Breathe · Release', desc:'Name the fear, breathe through it, let it pass. For when the alarm fires.', duration:'4 min',
     pal:{ bg:'linear-gradient(150deg,#110c1b 0%,#0b080f 100%)', border:'rgba(155,126,200,0.18)', accent:'#9b7ec8', bar:'#9b7ec8' },
-    lines:['Something has triggered the alarm inside you.','That’s okay.','Fear is not your enemy.','It’s a part of you trying to keep you safe.','...','Take a slow breath in.','And out.','...','Place one hand on your chest if you’d like.','Feel your own heartbeat.','It’s still here. You’re still here.','...','Quietly, just to yourself — name what you’re afraid of.','Don’t push it away. Let it exist for a moment.','Give it a name.','...','Now breathe in — slowly.','And as you breathe out, imagine that fear as a colour or a shape.','Watch it as you exhale.','It doesn’t have to leave. Just notice it.','...','Fear often tells a story about what might happen.','But right now, in this breath, you are okay.','...','Breathe in again.','And out.','...','You don’t have to fight the fear.','You don’t have to fix it right now.','You only have to breathe.','...','One more breath — long and slow.','And as you exhale — let it move through you.','Not stay. Move.','...','You are bigger than this feeling.','It will pass. And you will still be here.']
+    lines:['Something has triggered the alarm inside you.','That\'s okay.','Fear is not your enemy.','It\'s a part of you trying to keep you safe.','...','Take a slow breath in.','And out.','...','Place one hand on your chest if you\'d like.','Feel your own heartbeat.','It\'s still here. You\'re still here.','...','Quietly, just to yourself — name what you\'re afraid of.','Don\'t push it away. Let it exist for a moment.','Give it a name.','...','Now breathe in — slowly.','And as you breathe out, imagine that fear as a colour or a shape.','Watch it as you exhale.','It doesn\'t have to leave. Just notice it.','...','Fear often tells a story about what might happen.','But right now, in this breath, you are okay.','...','Breathe in again.','And out.','...','You don\'t have to fight the fear.','You don\'t have to fix it right now.','You only have to breathe.','...','One more breath — long and slow.','And as you exhale — let it move through you.','Not stay. Move.','...','You are bigger than this feeling.','It will pass. And you will still be here.']
   },
-  { id:'compassion', title:'Self Compassion Reset', tag:'Forgiveness · Kindness', desc:'For moments you’ve snapped or fallen short. A gentle return to yourself.', duration:'4 min',
+  { id:'compassion', title:'Self Compassion Reset', tag:'Forgiveness · Kindness', desc:'For moments you\'ve snapped or fallen short. A gentle return to yourself.', duration:'4 min',
     pal:{ bg:'linear-gradient(150deg,#1d0d15 0%,#110810 100%)', border:'rgba(200,126,155,0.18)', accent:'#c87e9b', bar:'#c87e9b' },
-    lines:['Something happened.','Maybe you said something you wish you hadn’t.','Maybe you fell short of who you want to be.','...','I want you to take a breath before you do anything else.','Breathe in.','And out.','...','You are not a bad person.','You are a person who is tired, or overwhelmed, or scared.','And sometimes those feelings come out sideways.','...','If there’s someone you’ve hurt — you’ll tend to that.','You already know you will.','But right now, we’re tending to you.','...','Place your hand on your heart.','Feel the warmth of your own touch.','...','Breathe in — and silently say to yourself:','This is hard.','I am human.','I am doing my best.','...','Say it again, gently.','This is hard.','I am human.','I am doing my best.','...','You are allowed to be imperfect.','Growth is not a straight line.','The fact that this moment matters to you —','that is who you are.','...','Take one more breath.','And let yourself be held — in your own kindness.']
+    lines:['Something happened.','Maybe you said something you wish you hadn\'t.','Maybe you fell short of who you want to be.','...','I want you to take a breath before you do anything else.','Breathe in.','And out.','...','You are not a bad person.','You are a person who is tired, or overwhelmed, or scared.','And sometimes those feelings come out sideways.','...','If there\'s someone you\'ve hurt — you\'ll tend to that.','You already know you will.','But right now, we\'re tending to you.','...','Place your hand on your heart.','Feel the warmth of your own touch.','...','Breathe in — and silently say to yourself:','This is hard.','I am human.','I am doing my best.','...','Say it again, gently.','This is hard.','I am human.','I am doing my best.','...','You are allowed to be imperfect.','Growth is not a straight line.','The fact that this moment matters to you —','that is who you are.','...','Take one more breath.','And let yourself be held — in your own kindness.']
   },
-  { id:'letgo', title:'Let It Go', tag:'Release · Open Hands', desc:'For when you’re gripping an outcome. Loosen your hold, trust the unfolding.', duration:'4 min',
+  { id:'letgo', title:'Let It Go', tag:'Release · Open Hands', desc:'For when you\'re gripping an outcome. Loosen your hold, trust the unfolding.', duration:'4 min',
     pal:{ bg:'linear-gradient(150deg,#0c1c13 0%,#081109 100%)', border:'rgba(126,200,155,0.18)', accent:'#7ec89b', bar:'#7ec89b' },
-    lines:['There’s something you’re holding onto.','An outcome you’ve been steering toward.','A result you need to go a certain way.','...','Take a breath.','And notice — where do you feel that grip in your body?','In your jaw? Your shoulders? Your chest?','...','Breathe in slowly.','And as you exhale, soften that place — just slightly.','Not letting go yet. Just softening.','...','Here is something true:','You have done what you can do.','You have shown up. You have tried.','...','The rest — the outcome, the response, the result —','lives outside your hands.','Holding it tightly doesn’t change what will happen.','It only costs you peace.','...','If you’d like — hold your hands out, palms up.','Imagine placing what you’re holding into open palms.','Not throwing it away.','Just releasing your grip.','...','Breathe in.','And as you breathe out — open your hands.','Physically, if you can.','...','What happens is allowed to happen.','You are allowed to not know.','You are allowed to trust.','...','Take one more breath.','And let the future be what it will be.','You are here. That is enough.']
+    lines:['There\'s something you\'re holding onto.','An outcome you\'ve been steering toward.','A result you need to go a certain way.','...','Take a breath.','And notice — where do you feel that grip in your body?','In your jaw? Your shoulders? Your chest?','...','Breathe in slowly.','And as you exhale, soften that place — just slightly.','Not letting go yet. Just softening.','...','Here is something true:','You have done what you can do.','You have shown up. You have tried.','...','The rest — the outcome, the response, the result —','lives outside your hands.','Holding it tightly doesn\'t change what will happen.','It only costs you peace.','...','If you\'d like — hold your hands out, palms up.','Imagine placing what you\'re holding into open palms.','Not throwing it away.','Just releasing your grip.','...','Breathe in.','And as you breathe out — open your hands.','Physically, if you can.','...','What happens is allowed to happen.','You are allowed to not know.','You are allowed to trust.','...','Take one more breath.','And let the future be what it will be.','You are here. That is enough.']
   }
 ];
 
+const AUDIO_MAP = {
+  grounding:  '/audio/grounding.mp3',
+  box:        '/audio/box-breathing.mp3',
+  fear:       '/audio/fear-release.mp3',
+  compassion: '/audio/compassion.mp3',
+  letgo:      '/audio/let-go.mp3'
+};
+
 /* ===== STATE ===== */
-const VOICE_KEY = 'stillspace_voice';
-let cur=null, lineIdx=0, dispLines=[], paused=false, inGap=false, gapTimer=null;
-let soundOn=false, audioCtx=null, noiseGain=null;
-let chosenVoiceName = localStorage.getItem(VOICE_KEY) || null;
+let cur = null, paused = false;
+let lineTimes = [], dispLineEls = [];
+let soundOn = false, audioCtx = null, noiseGain = null;
+
+const audioEl = document.getElementById('med-audio');
 
 /* ===== SCREENS ===== */
 function show(id) {
@@ -276,137 +216,128 @@ function show(id) {
   document.getElementById(id).classList.add('active');
 }
 
-/* ===== VOICE ===== */
-speechSynthesis.onvoiceschanged = () => {};
-
-function fallbackVoice() {
-  const vs = speechSynthesis.getVoices();
-  // Prefer enhanced/premium voices, then named good ones
-  const enhanced = vs.find(v => v.lang.startsWith('en') && /enhanced|premium/i.test(v.name));
-  if (enhanced) return enhanced;
-  const named = ['Samantha','Karen','Moira','Tessa','Fiona','Victoria','Susan','Serena'];
-  for (const n of named) { const v = vs.find(v => v.name.includes(n)); if (v) return v; }
-  const fe = vs.find(v => v.lang.startsWith('en') && /female/i.test(v.name));
-  if (fe) return fe;
-  const en = vs.find(v => v.lang.startsWith('en-'));
-  return en || vs[0] || null;
-}
-
-function getVoice() {
-  if (chosenVoiceName) {
-    const v = speechSynthesis.getVoices().find(v => v.name === chosenVoiceName);
-    if (v) return v;
-  }
-  return fallbackVoice();
-}
-
-/* ===== SPEECH ===== */
-function speak(text, cb) {
-  speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.rate = 0.78;
-  utt.pitch = 0.9;
-  utt.volume = 0.9;
-  const v = getVoice();
-  if (v) utt.voice = v;
-  inGap = false;
-  utt.onend = () => { inGap = true; gapTimer = setTimeout(() => { inGap = false; cb(); }, 950); };
-  utt.onerror = () => { inGap = true; gapTimer = setTimeout(() => { inGap = false; cb(); }, 700); };
-  speechSynthesis.speak(utt);
-}
-
-setInterval(() => {
-  if (!paused && speechSynthesis.speaking) { speechSynthesis.pause(); speechSynthesis.resume(); }
-}, 12000);
-
-function nextLine() {
-  if (paused || !cur) return;
-  if (lineIdx >= cur.lines.length) { finish(); return; }
-  const raw = cur.lines[lineIdx];
-  lineIdx++;
-  if (raw === '...') {
-    inGap = true;
-    gapTimer = setTimeout(() => { inGap = false; nextLine(); }, 1700);
-    return;
-  }
-  const domIdx = dispLines.indexOf(lineIdx - 1);
-  document.querySelectorAll('.line').forEach((el, i) => {
-    el.classList.remove('active', 'past');
-    if (i === domIdx) el.classList.add('active');
-    else if (i < domIdx) el.classList.add('past');
+/* ===== LINE TIMING ===== */
+function calcLineTimes(lines, duration) {
+  const PAUSE_W = 60;
+  const BASE_W  = 18;
+  const weights = lines.map(l => l === '...' ? PAUSE_W : l.length + BASE_W);
+  const total   = weights.reduce((a, b) => a + b, 0);
+  const times   = [];
+  let cum = 0;
+  lines.forEach((l, i) => {
+    if (l !== '...') times.push((cum / total) * duration);
+    cum += weights[i];
   });
-  const active = document.querySelector('.line.active');
-  if (active) active.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  const pct = dispLines.length > 1 ? (domIdx / (dispLines.length - 1)) * 100 : 100;
-  document.getElementById('prog').style.width = pct + '%';
-  speak(raw, nextLine);
+  return times;
 }
+
+/* ===== AUDIO EVENTS ===== */
+audioEl.addEventListener('timeupdate', () => {
+  if (!cur || !lineTimes.length) return;
+  const t = audioEl.currentTime;
+
+  let activeIdx = 0;
+  for (let i = 1; i < lineTimes.length; i++) {
+    if (lineTimes[i] <= t) activeIdx = i; else break;
+  }
+
+  dispLineEls.forEach((el, i) => {
+    el.classList.remove('active', 'past');
+    if (i === activeIdx) el.classList.add('active');
+    else if (i < activeIdx) el.classList.add('past');
+  });
+
+  if (dispLineEls[activeIdx]) {
+    dispLineEls[activeIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  const dur = audioEl.duration;
+  if (dur && dur > 0) {
+    document.getElementById('prog').style.width = (t / dur * 100) + '%';
+  }
+});
+
+audioEl.addEventListener('ended', finish);
 
 /* ===== START ===== */
 function startMed(med) {
-  cur = med; lineIdx = 0; paused = false; inGap = false;
-  clearTimeout(gapTimer); speechSynthesis.cancel();
-  dispLines = med.lines.reduce((a, l, i) => { if (l !== '...') a.push(i); return a; }, []);
+  cur = med; paused = false; lineTimes = [];
+
   const ms = document.getElementById('med-screen');
   ms.style.background = med.pal.bg;
   document.getElementById('prog').style.background = med.pal.bar;
   document.getElementById('prog').style.width = '0%';
   document.getElementById('med-name').textContent = med.title;
   document.getElementById('med-dur').textContent = med.duration;
+
   const area = document.getElementById('lines-area');
   area.innerHTML = '';
+  dispLineEls = [];
   med.lines.forEach(l => {
     if (l === '...') return;
     const d = document.createElement('div');
     d.className = 'line'; d.textContent = l;
     area.appendChild(d);
+    dispLineEls.push(d);
   });
+
   document.getElementById('btn-pause').textContent = '⏸';
   show('med-screen');
-  setTimeout(nextLine, 900);
+
+  audioEl.src = AUDIO_MAP[med.id];
+  audioEl.currentTime = 0;
+
+  // Call play() inside the user-gesture stack so iOS allows it
+  const p = audioEl.play();
+  if (p) p.catch(e => console.warn('Autoplay blocked:', e));
+
+  audioEl.addEventListener('loadedmetadata', function onMeta() {
+    lineTimes = calcLineTimes(med.lines, audioEl.duration);
+  }, { once: true });
 }
 
-/* ===== PAUSE ===== */
+/* ===== PAUSE / RESUME ===== */
 document.getElementById('btn-pause').addEventListener('click', () => {
   if (paused) {
     paused = false;
     document.getElementById('btn-pause').textContent = '⏸';
-    if (inGap) nextLine(); else speechSynthesis.resume();
+    audioEl.play();
   } else {
     paused = true;
     document.getElementById('btn-pause').textContent = '▶';
-    speechSynthesis.pause();
-    clearTimeout(gapTimer);
+    audioEl.pause();
   }
 });
 
 /* ===== BACK ===== */
 document.getElementById('btn-back').addEventListener('click', () => {
-  speechSynthesis.cancel(); clearTimeout(gapTimer);
+  audioEl.pause();
+  audioEl.src = '';
   paused = false; cur = null;
   show('menu-screen');
 });
 
 /* ===== FINISH ===== */
 function finish() {
-  speechSynthesis.cancel();
+  audioEl.pause();
   show('closing-screen');
   setTimeout(() => document.getElementById('glyph').classList.add('in'), 350);
   setTimeout(() => document.getElementById('words').classList.add('in'), 1200);
   setTimeout(() => document.getElementById('btn-return').classList.add('in'), 2800);
 }
+
 document.getElementById('btn-return').addEventListener('click', () => {
-  ['glyph','words','btn-return'].forEach(id => document.getElementById(id).classList.remove('in'));
+  ['glyph', 'words', 'btn-return'].forEach(id => document.getElementById(id).classList.remove('in'));
   buildMenu(); show('menu-screen');
 });
 
-/* ===== AMBIENT ===== */
+/* ===== AMBIENT RAIN ===== */
 function initAudio() {
   if (audioCtx) return;
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const sr = audioCtx.sampleRate;
+  const sr  = audioCtx.sampleRate;
   const buf = audioCtx.createBuffer(1, sr * 4, sr);
-  const d = buf.getChannelData(0);
+  const d   = buf.getChannelData(0);
   let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
   for (let i = 0; i < d.length; i++) {
     const w = Math.random() * 2 - 1;
@@ -423,6 +354,7 @@ function initAudio() {
   src.connect(lpf); lpf.connect(noiseGain); noiseGain.connect(audioCtx.destination);
   src.start();
 }
+
 document.getElementById('btn-sound').addEventListener('click', () => {
   initAudio();
   if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -432,58 +364,6 @@ document.getElementById('btn-sound').addEventListener('click', () => {
   btn.classList.toggle('lit', soundOn);
   btn.textContent = soundOn ? '🔊' : '🌧';
 });
-
-/* ===== VOICE PICKER ===== */
-function openVoicePicker() {
-  const allVoices = speechSynthesis.getVoices();
-  // English voices first, then others
-  const enVoices = allVoices.filter(v => v.lang.startsWith('en'));
-  const rest = allVoices.filter(v => !v.lang.startsWith('en'));
-  const voices = [...enVoices, ...rest];
-
-  const currentName = chosenVoiceName || fallbackVoice()?.name;
-  const list = document.getElementById('v-list');
-  list.innerHTML = '';
-
-  voices.forEach(v => {
-    const el = document.createElement('div');
-    el.className = 'v-item' + (v.name === currentName ? ' selected' : '');
-    el.innerHTML = `
-      <div class="v-item-dot"></div>
-      <div class="v-item-info">
-        <div class="v-item-name">${v.name}</div>
-        <div class="v-item-lang">${v.lang}${v.localService ? '' : ' · online'}</div>
-      </div>
-      <div class="v-preview">tap to preview</div>
-    `;
-    el.addEventListener('click', () => {
-      chosenVoiceName = v.name;
-      localStorage.setItem(VOICE_KEY, v.name);
-      // Update selection UI
-      list.querySelectorAll('.v-item').forEach(i => i.classList.remove('selected'));
-      el.classList.add('selected');
-      // Preview
-      speechSynthesis.cancel();
-      const utt = new SpeechSynthesisUtterance('Take a slow breath in. And let it go.');
-      utt.rate = 0.78; utt.pitch = 0.9; utt.volume = 0.9;
-      utt.voice = v;
-      speechSynthesis.speak(utt);
-    });
-    list.appendChild(el);
-  });
-
-  document.getElementById('v-sheet').classList.add('open');
-  document.getElementById('v-overlay').classList.add('open');
-}
-
-function closeVoicePicker() {
-  speechSynthesis.cancel();
-  document.getElementById('v-sheet').classList.remove('open');
-  document.getElementById('v-overlay').classList.remove('open');
-}
-
-document.getElementById('btn-voice').addEventListener('click', openVoicePicker);
-document.getElementById('v-overlay').addEventListener('click', closeVoicePicker);
 
 /* ===== MENU ===== */
 function buildMenu() {
