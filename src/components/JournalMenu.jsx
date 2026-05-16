@@ -6,7 +6,7 @@ const TYPES = [
     label: 'Scripting',
     tag: 'Manifestation · Morning',
     desc: 'Write as if your desired life has already happened.',
-    bg: '#fffde7', border: 'rgba(192,57,43,0.22)', color: '#C0392B',
+    bg: '#fdf0e8', border: 'rgba(192,57,43,0.18)', color: '#C0392B',
   },
   {
     id: 'gratitude',
