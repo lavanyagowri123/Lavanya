@@ -41,6 +41,12 @@ body {
 
 /* Ruled lines background for textarea */
 .journal-lines {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 39px,
+    rgba(192, 57, 43, 0.12) 39px,
+    rgba(192, 57, 43, 0.12) 40px
+  );
   line-height: 40px;
 }
 
@@ -48,14 +54,7 @@ body {
   resize: none;
   outline: none;
   border: none;
-  background-color: transparent;
-  background-image: repeating-linear-gradient(
-    transparent,
-    transparent 39px,
-    rgba(192, 57, 43, 0.12) 39px,
-    rgba(192, 57, 43, 0.12) 40px
-  );
-  background-attachment: local;
+  background: transparent;
   font-family: 'Kalam', cursive;
   font-size: 1.25rem;
   color: #C0392B;
