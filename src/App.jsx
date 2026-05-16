@@ -6,13 +6,12 @@ import WhyLadder from './components/WhyLadder'
 import BrainDump from './components/BrainDump'
 import DailyReflection from './components/DailyReflection'
 import ReframeJournal from './components/ReframeJournal'
-import InstallPrompt from './components/InstallPrompt'
 
 export default function App() {
   const [journalType, setJournalType] = useState(null)
   const back = () => setJournalType(null)
 
-  if (!journalType) return <><JournalMenu onSelect={setJournalType} /><InstallPrompt /></>
+  if (!journalType) return <JournalMenu onSelect={setJournalType} />
 
   const map = {
     scripting: <JournalPage onBack={back} />,
