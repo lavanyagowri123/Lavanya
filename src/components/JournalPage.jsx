@@ -152,7 +152,7 @@ export default function JournalPage({ onBack }) {
           {/* Writing area */}
           <div className="relative rounded-lg border border-ink/15 shadow-sm overflow-hidden"
                style={{ minHeight: '60vh' }}>
-            <div className="journal-lines p-6 min-h-[60vh]">
+            <div className="p-6 min-h-[60vh]">
               <textarea
                 ref={textareaRef}
                 value={text}
