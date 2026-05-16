@@ -6,7 +6,7 @@
   <title>Still Space · Move</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --bg: #faf5ef; --text: #f0e8dc; --muted: #9a8070; --accent: #d4714a; }
+    :root { --bg: #faf5ef; --muted: #9a8070; --accent: #d4714a; }
     html, body { height: 100%; background: var(--bg); color: #2c1f14; font-family: Georgia, 'Times New Roman', serif; -webkit-font-smoothing: antialiased; }
 
     .screen { position: fixed; inset: 0; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity 0.6s ease; }
@@ -14,23 +14,44 @@
 
     .home-link { position: fixed; top: 22px; right: 20px; z-index: 30; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(44,31,20,0.28); text-decoration: none; transition: color 0.2s; }
     .home-link:active { color: rgba(44,31,20,0.7); }
-    .home-link.on-dark { color: rgba(255,255,255,0.2); }
 
-    /* INTRO */
-    #intro-screen { background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
-    .intro-inner { min-height: 100%; padding: 72px 28px 56px; display: flex; flex-direction: column; }
-    .intro-badge { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; opacity: 0.7; }
-    .intro-name { font-size: 1.9rem; font-weight: normal; letter-spacing: 0.06em; line-height: 1.2; margin-bottom: 12px; }
-    .intro-desc { font-size: 0.82rem; line-height: 1.8; color: #a89070; margin-bottom: 36px; }
-    .ex-list { flex: 1; margin-bottom: 40px; }
+    /* ---- MENU ---- */
+    #menu-screen { background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .menu-hero { text-align: center; padding: 60px 24px 44px; }
+    .hero-dot { width: 7px; height: 7px; background: #d4714a; border-radius: 50%; margin: 0 auto 22px; opacity: 0.5; }
+    .menu-hero h1 { font-size: 1.8rem; font-weight: normal; letter-spacing: 0.22em; color: #8a4a18; margin-bottom: 10px; }
+    .menu-hero p { font-size: 0.75rem; letter-spacing: 0.16em; color: #a89070; text-transform: uppercase; }
+    .cards { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 56px; }
+    .section-label { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: #a89070; padding: 0 4px; margin-bottom: 2px; }
+    .section-label-other { margin-top: 8px; }
+    .card { border-radius: 20px; padding: 22px 20px 20px; cursor: pointer; border: 1px solid transparent; transition: transform 0.15s ease, opacity 0.15s ease; }
+    .card-today { border-width: 1.5px; }
+    .card:active { transform: scale(0.974); opacity: 0.88; }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+    .card-title { font-size: 1.05rem; font-weight: normal; letter-spacing: 0.02em; line-height: 1.3; }
+    .card-dur { font-size: 0.66rem; letter-spacing: 0.1em; color: #a89070; padding-top: 3px; white-space: nowrap; margin-left: 10px; }
+    .card-tag { font-size: 0.63rem; letter-spacing: 0.13em; text-transform: uppercase; opacity: 0.45; margin-bottom: 10px; }
+    .card-desc { font-size: 0.8rem; line-height: 1.65; color: #a89070; }
+
+    /* ---- INTRO ---- */
+    #intro-screen { background: var(--bg); overflow: hidden; }
+    .intro-header { flex-shrink: 0; padding: 52px 28px 24px; }
+    .intro-back { background: none; border: none; padding: 0 0 20px; font-family: inherit; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(44,31,20,0.35); cursor: pointer; display: block; transition: color 0.2s; -webkit-appearance: none; }
+    .intro-back:active { color: rgba(44,31,20,0.7); }
+    .intro-badge { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; opacity: 0.8; }
+    .intro-name { font-size: 1.9rem; font-weight: normal; letter-spacing: 0.06em; line-height: 1.2; margin-bottom: 10px; }
+    .intro-desc { font-size: 0.82rem; line-height: 1.8; color: #a89070; }
+    .intro-divider { flex-shrink: 0; height: 1px; background: rgba(44,31,20,0.08); margin: 0 28px; }
+    .ex-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 28px 0; }
     .ex-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid rgba(44,31,20,0.08); }
     .ex-list .ex-row:first-child { border-top: 1px solid rgba(44,31,20,0.08); }
     .ex-row-name { font-size: 0.88rem; color: #2c1f14; }
     .ex-row-dur { font-size: 0.66rem; color: #a89070; letter-spacing: 0.06em; }
+    .intro-footer { flex-shrink: 0; padding: 16px 28px 44px; border-top: 1px solid rgba(44,31,20,0.07); background: inherit; }
     .btn-begin { display: block; width: 100%; padding: 17px; background: none; border: 1px solid rgba(44,31,20,0.2); color: #2c1f14; border-radius: 50px; font-family: inherit; font-size: 0.82rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, border-color 0.2s; -webkit-appearance: none; }
     .btn-begin:active { background: rgba(44,31,20,0.05); border-color: rgba(44,31,20,0.4); }
 
-    /* ACTIVE */
+    /* ---- ACTIVE ---- */
     #active-screen { overflow: hidden; }
     .act-header { flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 22px 20px 14px; background: inherit; }
     .btn-back { background: none; border: 1px solid rgba(44,31,20,0.15); color: rgba(44,31,20,0.35); border-radius: 50%; width: 36px; height: 36px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: color 0.2s, border-color 0.2s; -webkit-appearance: none; line-height: 1; }
@@ -38,30 +59,24 @@
     .act-meta { flex: 1; min-width: 0; }
     .act-meta-name { font-size: 0.88rem; font-weight: normal; letter-spacing: 0.06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .act-meta-sub { font-size: 0.64rem; color: var(--muted); letter-spacing: 0.08em; margin-top: 2px; }
-
     .prog-wrap { flex-shrink: 0; height: 1px; background: rgba(44,31,20,0.1); }
     .prog-fill { height: 100%; width: 0%; transition: width 1s linear; }
-
     .exercise-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 36px; text-align: center; overflow: hidden; }
-
     .phase-label { font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 22px; }
     .phase-label.rest-mode { color: var(--muted); }
-
     .ring-wrap { width: 180px; height: 180px; margin-bottom: 28px; flex-shrink: 0; }
     .ring-svg { width: 100%; height: 100%; }
     .ring-track { fill: none; stroke: rgba(44,31,20,0.08); stroke-width: 3; }
     .ring-fill { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
     .ring-num { font-family: Georgia, serif; fill: #2c1f14; dominant-baseline: central; text-anchor: middle; }
-
     .ex-name { font-size: 1.3rem; font-weight: normal; letter-spacing: 0.04em; line-height: 1.35; margin-bottom: 14px; }
     .ex-note { font-size: 0.78rem; line-height: 1.8; color: var(--muted); max-width: 280px; }
-
     .act-controls { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 16px 36px 40px; border-top: 1px solid rgba(44,31,20,0.07); background: inherit; }
     .btn-ctrl { background: none; border: 1px solid rgba(44,31,20,0.14); color: rgba(44,31,20,0.4); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; -webkit-appearance: none; }
     .btn-ctrl:active { background: rgba(44,31,20,0.06); }
     .btn-pause { width: 62px; height: 62px; font-size: 1.5rem; }
 
-    /* DONE */
+    /* ---- DONE ---- */
     #done-screen { align-items: center; justify-content: center; text-align: center; padding: 40px 32px; background: var(--bg); color: #2c1f14; }
     .done-glyph { font-size: 2.4rem; color: var(--accent); margin-bottom: 32px; opacity: 0; transform: scale(0.75); transition: opacity 1.8s ease, transform 1.8s ease; }
     .done-glyph.in { opacity: 0.6; transform: scale(1); }
@@ -76,16 +91,32 @@
 
 <a href="/" class="home-link">Home</a>
 
-<div id="intro-screen" class="screen active">
-  <div class="intro-inner">
-    <div class="intro-badge">Today's practice</div>
+<!-- MENU -->
+<div id="menu-screen" class="screen active">
+  <div class="menu-hero">
+    <div class="hero-dot"></div>
+    <h1>Still Space</h1>
+    <p>Choose your movement</p>
+  </div>
+  <div class="cards" id="cards"></div>
+</div>
+
+<!-- INTRO -->
+<div id="intro-screen" class="screen">
+  <div class="intro-header">
+    <button class="intro-back" id="intro-back">← Back</button>
+    <div class="intro-badge" id="intro-badge">Today's practice</div>
     <div class="intro-name" id="intro-name"></div>
     <div class="intro-desc" id="intro-desc"></div>
-    <div class="ex-list" id="ex-list"></div>
+  </div>
+  <div class="intro-divider"></div>
+  <div class="ex-list" id="ex-list"></div>
+  <div class="intro-footer">
     <button class="btn-begin" id="btn-begin">Begin · 10 minutes</button>
   </div>
 </div>
 
+<!-- ACTIVE -->
 <div id="active-screen" class="screen">
   <div class="act-header">
     <button class="btn-back" id="btn-back">&#8592;</button>
@@ -114,6 +145,7 @@
   </div>
 </div>
 
+<!-- DONE -->
 <div id="done-screen" class="screen">
   <div class="done-glyph" id="done-glyph">✶</div>
   <div class="done-words">Ten minutes moved.<br>Your body is awake.<br><br>Carry this energy<br>with you today.</div>
@@ -121,78 +153,78 @@
 </div>
 
 <script>
-const CIRC = 2 * Math.PI * 78; // ≈ 490.1
+const CIRC = 2 * Math.PI * 78;
 
 const WORKOUTS = [
   {
-    id: 'hiit', name: 'HIIT Cardio', accent: '#d4714a',
+    id: 'hiit', name: 'HIIT Cardio', tag: 'Cardio · Intervals', accent: '#d4714a', cardBg: '#fef3ee', border: 'rgba(212,113,74,0.2)',
     bg: 'linear-gradient(150deg,#fef3ee 0%,#faf5ef 100%)',
     desc: 'High-intensity intervals to get your heart pumping and lungs working.',
     exercises: [
-      { name: 'Jumping Jacks',    note: 'Land softly, keep a steady rhythm.',                           work: 45, rest: 15 },
-      { name: 'High Knees',       note: 'Drive knees to hip height, pump your arms.',                   work: 45, rest: 15 },
-      { name: 'Burpees',          note: 'Squat → jump back to plank → jump forward → jump up.',         work: 45, rest: 15 },
-      { name: 'Mountain Climbers',note: 'High plank, drive alternating knees to chest fast.',           work: 45, rest: 15 },
-      { name: 'Jump Squats',      note: 'Squat deep, explode up, land with soft bent knees.',           work: 45, rest: 15 },
-      { name: 'Speed Skaters',    note: 'Leap side to side, tap the floor with your trailing hand.',    work: 45, rest: 15 },
-      { name: 'Butt Kicks',       note: 'Jog in place, flicking heels up to your glutes.',              work: 45, rest: 15 },
-      { name: 'Plank Jacks',      note: 'High plank — jump feet wide and snap back together.',          work: 45, rest: 15 },
-      { name: 'Star Jumps',       note: 'Jump with arms and legs wide, land softly.',                   work: 45, rest: 15 },
-      { name: 'Squat to Kick',    note: 'Squat, stand and kick one leg out. Alternate sides.',          work: 45, rest: 0  },
+      { name: 'Jumping Jacks',     note: 'Land softly, keep a steady rhythm.',                          work: 45, rest: 15 },
+      { name: 'High Knees',        note: 'Drive knees to hip height, pump your arms.',                  work: 45, rest: 15 },
+      { name: 'Burpees',           note: 'Squat → jump back to plank → jump forward → jump up.',        work: 45, rest: 15 },
+      { name: 'Mountain Climbers', note: 'High plank, drive alternating knees to chest fast.',          work: 45, rest: 15 },
+      { name: 'Jump Squats',       note: 'Squat deep, explode up, land with soft bent knees.',          work: 45, rest: 15 },
+      { name: 'Speed Skaters',     note: 'Leap side to side, tap the floor with your trailing hand.',   work: 45, rest: 15 },
+      { name: 'Butt Kicks',        note: 'Jog in place, flicking heels up to your glutes.',             work: 45, rest: 15 },
+      { name: 'Plank Jacks',       note: 'High plank — jump feet wide and snap back together.',         work: 45, rest: 15 },
+      { name: 'Star Jumps',        note: 'Jump with arms and legs wide, land softly.',                  work: 45, rest: 15 },
+      { name: 'Squat to Kick',     note: 'Squat, stand and kick one leg out. Alternate sides.',         work: 45, rest: 0  },
     ]
   },
   {
-    id: 'strength', name: 'Bodyweight Strength', accent: '#7ec89b',
+    id: 'strength', name: 'Bodyweight Strength', tag: 'Strength · Body', accent: '#7ec89b', cardBg: '#eef8f2', border: 'rgba(126,200,155,0.2)',
     bg: 'linear-gradient(150deg,#eef8f2 0%,#f2fcf5 100%)',
     desc: 'Build functional strength using only your body weight and a little floor space.',
     exercises: [
-      { name: 'Squats',           note: 'Feet shoulder-width, chest up, push knees out.',               work: 45, rest: 15 },
-      { name: 'Push-ups',         note: 'Hands wider than shoulders, lower chest to floor.',            work: 45, rest: 15 },
-      { name: 'Reverse Lunges',   note: 'Step back, lower back knee close to floor. Alternate.',        work: 45, rest: 15 },
-      { name: 'Plank Hold',       note: 'Straight line from head to heels. Breathe.',                  work: 45, rest: 15 },
-      { name: 'Glute Bridges',    note: 'Feet flat, push hips high, squeeze at the top.',              work: 45, rest: 15 },
-      { name: 'Tricep Dips',      note: 'Use a chair behind you. Lower until elbows reach 90°.',       work: 45, rest: 15 },
-      { name: 'Superman Hold',    note: 'Lie face down, lift arms and legs off the floor. Hold.',      work: 45, rest: 15 },
-      { name: 'Wall Sit',         note: 'Back flat on wall, thighs parallel to floor. Hold.',          work: 45, rest: 15 },
-      { name: 'Dead Bug',         note: 'Extend opposite arm and leg slowly. Press lower back flat.',  work: 45, rest: 15 },
-      { name: 'Bear Crawl Hold',  note: 'Hands and knees hovering just off the floor. Hold steady.',  work: 45, rest: 0  },
+      { name: 'Squats',          note: 'Feet shoulder-width, chest up, push knees out.',              work: 45, rest: 15 },
+      { name: 'Push-ups',        note: 'Hands wider than shoulders, lower chest to floor.',           work: 45, rest: 15 },
+      { name: 'Reverse Lunges',  note: 'Step back, lower back knee close to floor. Alternate.',       work: 45, rest: 15 },
+      { name: 'Plank Hold',      note: 'Straight line from head to heels. Breathe.',                 work: 45, rest: 15 },
+      { name: 'Glute Bridges',   note: 'Feet flat, push hips high, squeeze at the top.',             work: 45, rest: 15 },
+      { name: 'Tricep Dips',     note: 'Use a chair behind you. Lower until elbows reach 90°.',      work: 45, rest: 15 },
+      { name: 'Superman Hold',   note: 'Lie face down, lift arms and legs off the floor. Hold.',     work: 45, rest: 15 },
+      { name: 'Wall Sit',        note: 'Back flat on wall, thighs parallel to floor. Hold.',         work: 45, rest: 15 },
+      { name: 'Dead Bug',        note: 'Extend opposite arm and leg slowly. Press lower back flat.', work: 45, rest: 15 },
+      { name: 'Bear Crawl Hold', note: 'Hands and knees hovering just off the floor. Hold steady.', work: 45, rest: 0  },
     ]
   },
   {
-    id: 'core', name: 'Core Flow', accent: '#9b7ec8',
+    id: 'core', name: 'Core Flow', tag: 'Core · Floor', accent: '#9b7ec8', cardBg: '#f2eefa', border: 'rgba(155,126,200,0.2)',
     bg: 'linear-gradient(150deg,#f2eefa 0%,#f5f2ff 100%)',
     desc: 'Strengthen your centre from every angle. No equipment needed.',
     exercises: [
-      { name: 'Crunches',           note: 'Hands light behind head, curl chest toward knees.',          work: 45, rest: 15 },
+      { name: 'Crunches',           note: 'Hands light behind head, curl chest toward knees.',         work: 45, rest: 15 },
       { name: 'Leg Raises',         note: 'Raise legs to 90°, lower slowly without touching the floor.',work: 45, rest: 15 },
-      { name: 'Bicycle Kicks',      note: 'Opposite elbow to knee. Slow and controlled.',               work: 45, rest: 15 },
-      { name: 'Plank',              note: 'Forearms down. Squeeze glutes and core. Hold.',              work: 45, rest: 15 },
-      { name: 'Side Plank — Left',  note: 'Left forearm down, feet stacked. Keep hips lifted.',        work: 45, rest: 15 },
-      { name: 'Side Plank — Right', note: 'Right forearm down, feet stacked. Keep hips lifted.',       work: 45, rest: 15 },
-      { name: 'Russian Twists',     note: 'Lean back 45°, feet lifted. Rotate side to side.',          work: 45, rest: 15 },
-      { name: 'Reverse Crunches',   note: 'Curl knees toward chest, lift hips off the floor.',         work: 45, rest: 15 },
-      { name: 'Flutter Kicks',      note: 'Legs low and straight, alternate kicking up and down.',      work: 45, rest: 15 },
-      { name: 'Dead Bug',           note: 'Opposite arm and leg extend slowly. Lower back flat.',       work: 45, rest: 0  },
+      { name: 'Bicycle Kicks',      note: 'Opposite elbow to knee. Slow and controlled.',              work: 45, rest: 15 },
+      { name: 'Plank',              note: 'Forearms down. Squeeze glutes and core. Hold.',             work: 45, rest: 15 },
+      { name: 'Side Plank — Left',  note: 'Left forearm down, feet stacked. Keep hips lifted.',       work: 45, rest: 15 },
+      { name: 'Side Plank — Right', note: 'Right forearm down, feet stacked. Keep hips lifted.',      work: 45, rest: 15 },
+      { name: 'Russian Twists',     note: 'Lean back 45°, feet lifted. Rotate side to side.',         work: 45, rest: 15 },
+      { name: 'Reverse Crunches',   note: 'Curl knees toward chest, lift hips off the floor.',        work: 45, rest: 15 },
+      { name: 'Flutter Kicks',      note: 'Legs low and straight, alternate kicking up and down.',     work: 45, rest: 15 },
+      { name: 'Dead Bug',           note: 'Opposite arm and leg extend slowly. Lower back flat.',      work: 45, rest: 0  },
     ]
   },
   {
-    id: 'surya', name: 'Surya Namaskar', accent: '#c4956a',
+    id: 'surya', name: 'Surya Namaskar', tag: 'Flow · Breath', accent: '#c4956a', cardBg: '#fdf3e6', border: 'rgba(196,149,106,0.2)',
     bg: 'linear-gradient(150deg,#fef6ec 0%,#faf5ef 100%)',
     desc: 'Five rounds of sun salutation — flowing movement, breath and body as one.',
     rounds: 5,
     exercises: [
-      { name: 'Pranamasana',           note: 'Stand tall, palms together at heart. Eyes soft.',            work: 10, rest: 0 },
-      { name: 'Hastauttanasana',       note: 'Inhale — sweep arms up and back. Open your chest.',          work: 10, rest: 0 },
-      { name: 'Hasta Padasana',        note: 'Exhale — fold forward, hands toward the floor.',             work: 10, rest: 0 },
-      { name: 'Ashwa Sanchalanasana',  note: 'Inhale — step right leg back, right knee lowers.',           work: 10, rest: 0 },
-      { name: 'Dandasana',             note: 'Hold — step back to high plank. Body one straight line.',    work: 10, rest: 0 },
-      { name: 'Ashtanga Namaskara',    note: 'Exhale — lower knees, chest, and chin to the floor.',        work: 10, rest: 0 },
-      { name: 'Bhujangasana',          note: 'Inhale — press into palms, lift chest into cobra.',          work: 10, rest: 0 },
-      { name: 'Adho Mukha Svanasana',  note: 'Exhale — lift hips, press heels toward the floor.',         work: 10, rest: 0 },
-      { name: 'Ashwa Sanchalanasana',  note: 'Inhale — step right foot forward between your hands.',       work: 10, rest: 0 },
-      { name: 'Hasta Padasana',        note: 'Exhale — bring left foot forward, fold over your legs.',     work: 10, rest: 0 },
-      { name: 'Hastauttanasana',       note: 'Inhale — sweep arms up, look up, gentle backbend.',          work: 10, rest: 0 },
-      { name: 'Tadasana',              note: 'Exhale — lower arms, palms together. Rest in stillness.',    work: 10, rest: 0 },
+      { name: 'Pranamasana',          note: 'Stand tall, palms together at heart. Eyes soft.',           work: 10, rest: 0 },
+      { name: 'Hastauttanasana',      note: 'Inhale — sweep arms up and back. Open your chest.',         work: 10, rest: 0 },
+      { name: 'Hasta Padasana',       note: 'Exhale — fold forward, hands toward the floor.',            work: 10, rest: 0 },
+      { name: 'Ashwa Sanchalanasana', note: 'Inhale — step right leg back, right knee lowers.',          work: 10, rest: 0 },
+      { name: 'Dandasana',            note: 'Hold — step back to high plank. Body one straight line.',   work: 10, rest: 0 },
+      { name: 'Ashtanga Namaskara',   note: 'Exhale — lower knees, chest, and chin to the floor.',       work: 10, rest: 0 },
+      { name: 'Bhujangasana',         note: 'Inhale — press into palms, lift chest into cobra.',         work: 10, rest: 0 },
+      { name: 'Adho Mukha Svanasana', note: 'Exhale — lift hips, press heels toward the floor.',        work: 10, rest: 0 },
+      { name: 'Ashwa Sanchalanasana', note: 'Inhale — step right foot forward between your hands.',      work: 10, rest: 0 },
+      { name: 'Hasta Padasana',       note: 'Exhale — bring left foot forward, fold over your legs.',    work: 10, rest: 0 },
+      { name: 'Hastauttanasana',      note: 'Inhale — sweep arms up, look up, gentle backbend.',         work: 10, rest: 0 },
+      { name: 'Tadasana',             note: 'Exhale — lower arms, palms together. Rest in stillness.',   work: 10, rest: 0 },
     ]
   }
 ];
@@ -211,7 +243,7 @@ if (saved.date === TODAY) {
 
 /* ===== STATE ===== */
 let steps = [], stepIdx = 0, timeLeft = 0, totalSecs = 0, elapsedSecs = 0;
-let ticker = null, isPaused = false, activeWorkout = null;
+let ticker = null, isPaused = false, activeWorkout = null, selectedWorkout = null;
 let wakeLock = null;
 
 /* ===== WAKE LOCK ===== */
@@ -231,6 +263,66 @@ function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
+
+/* ===== MENU ===== */
+function hexToRgba(hex, a) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+function makeCard(w, isToday) {
+  const el = document.createElement('div');
+  el.className = 'card' + (isToday ? ' card-today' : '');
+  const border = isToday ? hexToRgba(w.accent, 0.42) : w.border;
+  el.style.cssText = `background:${w.cardBg};border-color:${border};`;
+  el.innerHTML = `<div class="card-top"><div class="card-title" style="color:${w.accent}">${w.name}</div><div class="card-dur">10 min</div></div><div class="card-tag" style="color:#a89070;opacity:1">${w.tag}</div><div class="card-desc">${w.desc}</div>`;
+  el.addEventListener('click', () => openIntro(w, isToday));
+  return el;
+}
+
+function sectionLabel(text, extra) {
+  const el = document.createElement('div');
+  el.className = 'section-label' + (extra ? ' ' + extra : '');
+  el.textContent = text;
+  return el;
+}
+
+function buildMenu() {
+  const c = document.getElementById('cards');
+  c.innerHTML = '';
+  c.appendChild(sectionLabel("today's practice"));
+  c.appendChild(makeCard(todayWorkout, true));
+  c.appendChild(sectionLabel('or choose another', 'section-label-other'));
+  WORKOUTS.filter(w => w.id !== todayWorkout.id).forEach(w => c.appendChild(makeCard(w, false)));
+}
+
+/* ===== INTRO ===== */
+function openIntro(w, isToday) {
+  selectedWorkout = w;
+  const screen = document.getElementById('intro-screen');
+  screen.style.setProperty('--accent', w.accent);
+  screen.style.background = w.bg;
+  document.getElementById('intro-badge').textContent = isToday ? "today's practice" : 'choose this workout';
+  document.getElementById('intro-name').textContent = w.name;
+  document.getElementById('intro-name').style.color = w.accent;
+  document.getElementById('intro-desc').textContent = w.desc;
+
+  const list = document.getElementById('ex-list');
+  list.innerHTML = '';
+  w.exercises.forEach(ex => {
+    const r = document.createElement('div');
+    r.className = 'ex-row';
+    const dur = w.rounds ? `10s × ${w.rounds} rounds` : `${ex.work}s`;
+    r.innerHTML = `<span class="ex-row-name">${ex.name}</span><span class="ex-row-dur">${dur}</span>`;
+    list.appendChild(r);
+  });
+
+  list.scrollTop = 0;
+  show('intro-screen');
+}
+
+document.getElementById('intro-back').addEventListener('click', () => show('menu-screen'));
+document.getElementById('btn-begin').addEventListener('click', () => startWorkout(selectedWorkout));
 
 /* ===== BUILD STEPS ===== */
 function buildSteps(w) {
@@ -262,7 +354,7 @@ function setRing(remaining, total, instant) {
   if (instant) {
     el.style.transition = 'none';
     el.setAttribute('stroke-dashoffset', offset);
-    el.getBoundingClientRect(); // force reflow
+    el.getBoundingClientRect();
     el.style.transition = '';
   } else {
     el.style.transition = 'stroke-dashoffset 1s linear';
@@ -297,7 +389,6 @@ function loadStep(idx) {
 
   document.getElementById('ex-name').textContent = step.name;
   document.getElementById('ex-note').textContent = step.note;
-
   setRing(timeLeft, step.duration, true);
 }
 
@@ -305,18 +396,12 @@ function loadStep(idx) {
 function tick() {
   timeLeft--;
   elapsedSecs++;
-  const step = steps[stepIdx];
-  setRing(timeLeft, step.duration, false);
+  setRing(timeLeft, steps[stepIdx].duration, false);
   document.getElementById('prog').style.width = Math.min(elapsedSecs / totalSecs * 100, 100) + '%';
-
   if (timeLeft <= 0) {
     stepIdx++;
-    if (stepIdx >= steps.length) {
-      clearInterval(ticker);
-      finishWorkout();
-    } else {
-      loadStep(stepIdx);
-    }
+    if (stepIdx >= steps.length) { clearInterval(ticker); finishWorkout(); }
+    else loadStep(stepIdx);
   }
 }
 
@@ -357,7 +442,7 @@ document.getElementById('btn-pause').addEventListener('click', () => {
   }
 });
 
-/* ===== BACK ===== */
+/* ===== BACK (active → intro) ===== */
 document.getElementById('btn-back').addEventListener('click', () => {
   clearInterval(ticker);
   releaseWakeLock();
@@ -376,37 +461,11 @@ function finishWorkout() {
 }
 document.getElementById('btn-return').addEventListener('click', () => {
   ['done-glyph', 'done-words', 'btn-return'].forEach(id => document.getElementById(id).classList.remove('in'));
-  show('intro-screen');
+  buildMenu();
+  show('menu-screen');
 });
 
-/* ===== INTRO ===== */
-function buildIntro(w) {
-  document.getElementById('intro-screen').style.setProperty('--accent', w.accent);
-  const nameEl = document.getElementById('intro-name');
-  nameEl.textContent = w.name;
-  nameEl.style.color = w.accent;
-  document.getElementById('intro-desc').textContent = w.desc;
-  const list = document.getElementById('ex-list');
-  list.innerHTML = '';
-  if (w.rounds) {
-    w.exercises.forEach(ex => {
-      const r = document.createElement('div');
-      r.className = 'ex-row';
-      r.innerHTML = `<span class="ex-row-name">${ex.name}</span><span class="ex-row-dur">10s × ${w.rounds} rounds</span>`;
-      list.appendChild(r);
-    });
-  } else {
-    w.exercises.forEach(ex => {
-      const r = document.createElement('div');
-      r.className = 'ex-row';
-      r.innerHTML = `<span class="ex-row-name">${ex.name}</span><span class="ex-row-dur">${ex.work}s</span>`;
-      list.appendChild(r);
-    });
-  }
-}
-
-buildIntro(todayWorkout);
-document.getElementById('btn-begin').addEventListener('click', () => startWorkout(todayWorkout));
+buildMenu();
 </script>
 </body>
 </html>
