@@ -72,19 +72,6 @@
     .ex-name { font-size: 1.3rem; font-weight: normal; letter-spacing: 0.04em; line-height: 1.35; margin-bottom: 14px; }
     .ex-note { font-size: 0.78rem; line-height: 1.8; color: var(--muted); max-width: 280px; }
 
-    /* ---- STICK FIGURE ANIMATIONS ---- */
-    #ex-anim { margin-bottom: 18px; height: 96px; display: flex; align-items: center; justify-content: center; }
-    #ex-anim.hidden { display: none; }
-    .jj-arm-l { transform-origin: 50px 38px; animation: jj-arm-l 0.65s ease-in-out infinite alternate; }
-    .jj-arm-r { transform-origin: 50px 38px; animation: jj-arm-r 0.65s ease-in-out infinite alternate; }
-    .jj-leg-l { transform-origin: 50px 74px; animation: jj-leg-l 0.65s ease-in-out infinite alternate; }
-    .jj-leg-r { transform-origin: 50px 74px; animation: jj-leg-r 0.65s ease-in-out infinite alternate; }
-    @keyframes jj-arm-l { from { transform: rotate(0deg); } to { transform: rotate(-92deg); } }
-    @keyframes jj-arm-r { from { transform: rotate(0deg); } to { transform: rotate(92deg); } }
-    @keyframes jj-leg-l { from { transform: rotate(0deg); } to { transform: rotate(-24deg); } }
-    @keyframes jj-leg-r { from { transform: rotate(0deg); } to { transform: rotate(24deg); } }
-    #ex-anim.paused .jj-arm-l, #ex-anim.paused .jj-arm-r,
-    #ex-anim.paused .jj-leg-l, #ex-anim.paused .jj-leg-r { animation-play-state: paused; }
     .act-controls { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 16px 36px 40px; border-top: 1px solid rgba(44,31,20,0.07); background: inherit; }
     .btn-ctrl { background: none; border: 1px solid rgba(44,31,20,0.14); color: rgba(44,31,20,0.4); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; -webkit-appearance: none; }
     .btn-ctrl:active { background: rgba(44,31,20,0.06); }
@@ -142,7 +129,6 @@
   <div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
   <div class="exercise-area">
     <div class="phase-label" id="phase-label">Work</div>
-    <div id="ex-anim" class="hidden"></div>
     <div class="ring-wrap">
       <svg class="ring-svg" viewBox="0 0 180 180">
         <circle class="ring-track" cx="90" cy="90" r="78"/>
@@ -404,31 +390,6 @@ function setRing(remaining, total, instant) {
   document.getElementById('ring-num').textContent = remaining;
 }
 
-/* ===== EXERCISE ANIMATIONS ===== */
-const ANIMS = {
-  'Jumping Jacks': `<svg viewBox="0 0 100 120" width="76" height="91" style="color:var(--accent);opacity:0.72" aria-hidden="true">
-    <circle cx="50" cy="11" r="9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-    <line x1="50" y1="20" x2="50" y2="74" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-    <g class="jj-arm-l"><line x1="50" y1="38" x2="24" y2="62" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></g>
-    <g class="jj-arm-r"><line x1="50" y1="38" x2="76" y2="62" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></g>
-    <g class="jj-leg-l"><line x1="50" y1="74" x2="37" y2="118" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></g>
-    <g class="jj-leg-r"><line x1="50" y1="74" x2="63" y2="118" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></g>
-  </svg>`
-}
-
-function setExerciseAnim(name, paused) {
-  const el = document.getElementById('ex-anim')
-  const svg = ANIMS[name]
-  if (svg) {
-    el.innerHTML = svg
-    el.classList.remove('hidden')
-    el.classList.toggle('paused', !!paused)
-  } else {
-    el.innerHTML = ''
-    el.classList.add('hidden')
-  }
-}
-
 /* ===== LOAD STEP ===== */
 function loadStep(idx) {
   const step = steps[idx];
@@ -456,7 +417,6 @@ function loadStep(idx) {
   document.getElementById('ex-name').textContent = step.name;
   document.getElementById('ex-note').textContent = step.note;
   setRing(timeLeft, step.duration, true);
-  setExerciseAnim(step.name, isPaused);
 }
 
 /* ===== TICK ===== */
@@ -499,13 +459,11 @@ document.getElementById('btn-pause').addEventListener('click', () => {
   if (isPaused) {
     isPaused = false;
     document.getElementById('btn-pause').textContent = '⏸';
-    document.getElementById('ex-anim').classList.remove('paused');
     ticker = setInterval(tick, 1000);
     requestWakeLock();
   } else {
     isPaused = true;
     document.getElementById('btn-pause').textContent = '▶';
-    document.getElementById('ex-anim').classList.add('paused');
     clearInterval(ticker);
     releaseWakeLock();
   }
