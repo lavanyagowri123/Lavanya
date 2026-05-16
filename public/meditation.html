@@ -51,12 +51,11 @@
     .card-desc { font-size: 0.8rem; line-height: 1.65; opacity: 0.68; }
 
     /* ---- MEDITATION ---- */
-    #med-screen { background: var(--bg); }
+    #med-screen { background: var(--bg); overflow: hidden; }
     .med-header {
       display: flex; align-items: center; gap: 12px;
       padding: 22px 20px 16px;
-      position: sticky; top: 0; z-index: 10;
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      flex-shrink: 0;
       background: inherit;
     }
     .btn-back {
@@ -73,7 +72,7 @@
     .med-meta span { font-size: 0.66rem; color: var(--muted); letter-spacing: 0.08em; }
     .prog-wrap { height: 1px; background: rgba(255,255,255,0.06); margin: 0 20px; }
     .prog-fill { height: 100%; width: 0%; transition: width 0.8s linear; }
-    .lines-area { padding: 44px 28px 20px; display: flex; flex-direction: column; min-height: calc(100vh - 160px); }
+    .lines-area { padding: 44px 28px 40px; display: flex; flex-direction: column; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .line {
       font-size: 1rem; line-height: 1.95; text-align: center;
       color: rgba(240,232,220,0.38);
@@ -84,11 +83,11 @@
     .line.past { color: rgba(240,232,220,0.28); font-size: 0.92rem; }
 
     .controls {
-      position: sticky; bottom: 0;
+      flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       gap: 40px;
-      padding: 18px 36px 38px;
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      padding: 16px 36px 40px;
+      border-top: 1px solid rgba(255,255,255,0.05);
       background: inherit;
     }
     .btn-ctrl {
@@ -207,8 +206,21 @@ const AUDIO_MAP = {
 let cur = null, paused = false;
 let lineTimes = [], dispLineEls = [];
 let soundOn = false, audioCtx = null, noiseGain = null;
+let wakeLock = null;
 
 const audioEl = document.getElementById('med-audio');
+
+/* ===== WAKE LOCK ===== */
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  try { wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+}
+function releaseWakeLock() {
+  if (wakeLock) { wakeLock.release(); wakeLock = null; }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && cur && !paused) requestWakeLock();
+});
 
 /* ===== SCREENS ===== */
 function show(id) {
@@ -283,6 +295,7 @@ function startMed(med) {
 
   document.getElementById('btn-pause').textContent = '⏸';
   show('med-screen');
+  requestWakeLock();
 
   audioEl.src = AUDIO_MAP[med.id];
   audioEl.currentTime = 0;
@@ -306,6 +319,7 @@ document.getElementById('btn-pause').addEventListener('click', () => {
     paused = true;
     document.getElementById('btn-pause').textContent = '▶';
     audioEl.pause();
+    releaseWakeLock();
   }
 });
 
@@ -314,12 +328,14 @@ document.getElementById('btn-back').addEventListener('click', () => {
   audioEl.pause();
   audioEl.src = '';
   paused = false; cur = null;
+  releaseWakeLock();
   show('menu-screen');
 });
 
 /* ===== FINISH ===== */
 function finish() {
   audioEl.pause();
+  releaseWakeLock();
   show('closing-screen');
   setTimeout(() => document.getElementById('glyph').classList.add('in'), 350);
   setTimeout(() => document.getElementById('words').classList.add('in'), 1200);
