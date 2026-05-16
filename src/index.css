@@ -40,21 +40,21 @@ body {
 }
 
 /* Ruled lines background for textarea */
-.journal-lines {
-  background-image: repeating-linear-gradient(
-    transparent,
-    transparent 39px,
-    rgba(192, 57, 43, 0.12) 39px,
-    rgba(192, 57, 43, 0.12) 40px
-  );
-  line-height: 40px;
-}
-
 .journal-textarea {
+  display: block;
   resize: none;
   outline: none;
   border: none;
-  background: transparent;
+  background-image: linear-gradient(
+    transparent 25px,
+    rgba(192, 57, 43, 0.12) 25px,
+    rgba(192, 57, 43, 0.12) 26px,
+    transparent 26px
+  );
+  background-size: 100% 40px;
+  background-repeat: repeat;
+  background-attachment: local;
+  background-origin: content-box;
   font-family: 'Kalam', cursive;
   font-size: 1.25rem;
   color: #C0392B;
