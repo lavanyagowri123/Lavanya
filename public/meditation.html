@@ -8,16 +8,16 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #1a1108;
+      --bg: #faf5ef;
       --text: #f0e8dc;
-      --muted: #9a8a78;
+      --muted: #9a8070;
       --accent: #c4956a;
     }
 
     html, body {
       height: 100%;
       background: var(--bg);
-      color: var(--text);
+      color: #2c1f14;
       font-family: 'Georgia', 'Times New Roman', serif;
       -webkit-font-smoothing: antialiased;
     }
@@ -38,9 +38,9 @@
     /* ---- MENU ---- */
     #menu-screen { padding: 0 0 56px; }
     .menu-hero { text-align: center; padding: 60px 24px 44px; }
-    .hero-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; margin: 0 auto 22px; opacity: 0.65; }
-    .menu-hero h1 { font-size: 1.8rem; font-weight: normal; letter-spacing: 0.22em; color: var(--accent); margin-bottom: 10px; }
-    .menu-hero p { font-size: 0.75rem; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; }
+    .hero-dot { width: 7px; height: 7px; background: #c4956a; border-radius: 50%; margin: 0 auto 22px; opacity: 0.5; }
+    .menu-hero h1 { font-size: 1.8rem; font-weight: normal; letter-spacing: 0.22em; color: #8a6218; margin-bottom: 10px; }
+    .menu-hero p { font-size: 0.75rem; letter-spacing: 0.16em; color: #a89070; text-transform: uppercase; }
     .cards { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; }
     .card { border-radius: 20px; padding: 22px 20px 20px; cursor: pointer; border: 1px solid transparent; transition: transform 0.15s ease, opacity 0.15s ease; }
     .card:active { transform: scale(0.974); opacity: 0.88; }
@@ -48,7 +48,7 @@
     .card-title { font-size: 1.05rem; font-weight: normal; letter-spacing: 0.02em; line-height: 1.3; }
     .card-dur { font-size: 0.66rem; letter-spacing: 0.1em; opacity: 0.5; padding-top: 3px; white-space: nowrap; margin-left: 10px; }
     .card-tag { font-size: 0.63rem; letter-spacing: 0.13em; text-transform: uppercase; opacity: 0.45; margin-bottom: 10px; }
-    .card-desc { font-size: 0.8rem; line-height: 1.65; opacity: 0.68; }
+    .card-desc { font-size: 0.8rem; line-height: 1.65; color: #a89070; }
 
     /* ---- MEDITATION ---- */
     #med-screen { background: var(--bg); overflow: hidden; }
@@ -79,7 +79,7 @@
       transition: color 0.55s ease, font-size 0.45s ease;
       padding: 1px 0;
     }
-    .line.active { color: var(--text); font-size: 1.12rem; }
+    .line.active { color: #f0e8dc; font-size: 1.12rem; }
     .line.past { color: rgba(240,232,220,0.28); font-size: 0.92rem; }
 
     .controls {
@@ -102,15 +102,15 @@
     .btn-pause { width: 62px; height: 62px; font-size: 1.5rem; }
 
     /* ---- CLOSING ---- */
-    #closing-screen { align-items: center; justify-content: center; text-align: center; padding: 40px 32px; background: var(--bg); }
-    .closing-glyph { font-size: 2.4rem; color: var(--accent); margin-bottom: 32px; opacity: 0; transform: scale(0.75); transition: opacity 1.8s ease, transform 1.8s ease; }
-    .closing-glyph.in { opacity: 0.65; transform: scale(1); }
-    .closing-words { font-size: 1rem; line-height: 2.1; color: var(--muted); max-width: 264px; opacity: 0; transition: opacity 1.8s ease 0.9s; }
+    #closing-screen { align-items: center; justify-content: center; text-align: center; padding: 40px 32px; background: var(--bg); color: #2c1f14; }
+    .closing-glyph { font-size: 2.4rem; color: #c4956a; margin-bottom: 32px; opacity: 0; transform: scale(0.75); transition: opacity 1.8s ease, transform 1.8s ease; }
+    .closing-glyph.in { opacity: 0.6; transform: scale(1); }
+    .closing-words { font-size: 1rem; line-height: 2.1; color: #a89070; max-width: 264px; opacity: 0; transition: opacity 1.8s ease 0.9s; }
     .closing-words.in { opacity: 1; }
     .btn-return {
       margin-top: 52px; background: none;
-      border: 1px solid rgba(255,255,255,0.13);
-      color: rgba(255,255,255,0.38);
+      border: 1px solid rgba(44,31,20,0.18);
+      color: rgba(44,31,20,0.4);
       padding: 13px 34px; border-radius: 40px;
       font-family: inherit; font-size: 0.75rem;
       letter-spacing: 0.16em; text-transform: uppercase;
@@ -119,15 +119,16 @@
       -webkit-appearance: none;
     }
     .btn-return.in { opacity: 1; }
-    .btn-return:active { color: var(--text); border-color: rgba(255,255,255,0.32); }
+    .btn-return:active { color: #2c1f14; border-color: rgba(44,31,20,0.4); }
 
     /* ---- HOME LINK ---- */
     .home-link {
       position: fixed; top: 22px; right: 20px; z-index: 20;
       font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(255,255,255,0.18); text-decoration: none; transition: color 0.2s;
+      color: rgba(44,31,20,0.28); text-decoration: none; transition: color 0.2s;
     }
-    .home-link:active { color: rgba(255,255,255,0.5); }
+    .home-link:active { color: rgba(44,31,20,0.7); }
+    .home-link.on-dark { color: rgba(255,255,255,0.2); }
   </style>
 </head>
 <body>
@@ -226,6 +227,7 @@ document.addEventListener('visibilitychange', () => {
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  document.querySelector('.home-link').classList.toggle('on-dark', id === 'med-screen');
 }
 
 /* ===== LINE TIMING ===== */
