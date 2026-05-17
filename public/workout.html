@@ -144,7 +144,7 @@
 <!-- DONE -->
 <div id="done-screen" class="screen">
   <div class="done-glyph" id="done-glyph">✶</div>
-  <div class="done-words">Ten minutes moved.<br>Your body is awake.<br><br>Carry this energy<br>with you today.</div>
+  <div class="done-words" id="done-words"></div>
   <button class="btn-return" id="btn-return">Return</button>
 </div>
 
@@ -182,6 +182,7 @@ const WORKOUTS = [
     id: 'hiit', name: 'HIIT Cardio', tag: 'Cardio · Intervals', accent: '#d4714a', cardBg: '#fef3ee', border: 'rgba(212,113,74,0.2)',
     bg: 'linear-gradient(150deg,#fef3ee 0%,#faf5ef 100%)',
     desc: 'High-intensity intervals to get your heart pumping and lungs working.',
+    doneMsg: 'You pushed through every round.<br><br>That energy you feel right now?<br>You made that.',
     exercises: [
       { name: 'Jumping Jacks',     note: 'Land softly, keep a steady rhythm.',                          work: 45, rest: 15 },
       { name: 'High Knees',        note: 'Drive knees to hip height, pump your arms.',                  work: 45, rest: 15 },
@@ -199,6 +200,7 @@ const WORKOUTS = [
     id: 'strength', name: 'Bodyweight Strength', tag: 'Strength · Body', accent: '#7ec89b', cardBg: '#eef8f2', border: 'rgba(126,200,155,0.2)',
     bg: 'linear-gradient(150deg,#eef8f2 0%,#f2fcf5 100%)',
     desc: 'Build functional strength using only your body weight and a little floor space.',
+    doneMsg: 'Every rep was a choice.<br><br>Your body is stronger<br>than it was ten minutes ago.',
     exercises: [
       { name: 'Squats',          note: 'Feet shoulder-width, chest up, push knees out.',              work: 45, rest: 15 },
       { name: 'Push-ups',        note: 'Hands wider than shoulders, lower chest to floor.',           work: 45, rest: 15 },
@@ -216,6 +218,7 @@ const WORKOUTS = [
     id: 'core', name: 'Core Flow', tag: 'Core · Floor', accent: '#9b7ec8', cardBg: '#f2eefa', border: 'rgba(155,126,200,0.2)',
     bg: 'linear-gradient(150deg,#f2eefa 0%,#f5f2ff 100%)',
     desc: 'Strengthen your centre from every angle. No equipment needed.',
+    doneMsg: 'Your core held through all of it.<br><br>That steadiness lives in your body now.<br>Take it with you.',
     exercises: [
       { name: 'Crunches',           note: 'Hands light behind head, curl chest toward knees.',         work: 45, rest: 15 },
       { name: 'Leg Raises',         note: 'Raise legs to 90°, lower slowly without touching the floor.',work: 45, rest: 15 },
@@ -233,6 +236,7 @@ const WORKOUTS = [
     id: 'surya', name: 'Surya Namaskar', tag: 'Flow · Breath', accent: '#c4956a', cardBg: '#fdf3e6', border: 'rgba(196,149,106,0.2)',
     bg: 'linear-gradient(150deg,#fef6ec 0%,#faf5ef 100%)',
     desc: 'Five rounds of sun salutation — flowing movement, breath and body as one.',
+    doneMsg: 'Ten minutes of breath and movement.<br><br>You honoured your body today.<br>Namaste.',
     exercises: [
       { name: 'Surya Namaskar', note: 'Five rounds at your own pace. Let breath lead the movement.', work: 600, rest: 0 },
     ]
@@ -241,6 +245,7 @@ const WORKOUTS = [
     id: 'lymph', name: 'Lymphatic Flow', tag: 'Gentle · Drainage', accent: '#5ba4b5', cardBg: '#eef6f8', border: 'rgba(91,164,181,0.2)',
     bg: 'linear-gradient(150deg,#eef6f8 0%,#f0f8fa 100%)',
     desc: 'Gentle rhythmic movement to wake up your lymphatic system and release stagnant energy.',
+    doneMsg: 'Your lymph is moving, your body is clear.<br><br>Soft and steady wins.<br>Beautiful work.',
     exercises: [
       { name: 'Lymphatic Hops',  note: 'Bounce softly on the balls of your feet. Keep it light and effortless.',        work: 60, rest: 10 },
       { name: 'Body Wave',       note: 'Start at your hips and ripple the wave up through your spine and arms.',         work: 60, rest: 10 },
@@ -269,6 +274,31 @@ if (saved.date === TODAY) {
 let steps = [], stepIdx = 0, timeLeft = 0, totalSecs = 0, elapsedSecs = 0;
 let ticker = null, isPaused = false, activeWorkout = null, selectedWorkout = null;
 let wakeLock = null;
+
+/* ===== AUDIO ===== */
+let _actx = null;
+function getActx() {
+  if (!_actx) _actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (_actx.state === 'suspended') _actx.resume();
+  return _actx;
+}
+function beep(freq, dur, vol) {
+  try {
+    const ctx = getActx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + dur);
+  } catch(e) {}
+}
+function playTick() { beep(880, 0.07, 0.18); }
+function playEnd()  { beep(528, 0.4,  0.45); }
 
 /* ===== WAKE LOCK ===== */
 async function requestWakeLock() {
@@ -348,7 +378,7 @@ function openIntro(w, isToday) {
 }
 
 document.getElementById('intro-back').addEventListener('click', () => show('menu-screen'));
-document.getElementById('btn-begin').addEventListener('click', () => startWorkout(selectedWorkout));
+document.getElementById('btn-begin').addEventListener('click', () => { getActx(); startWorkout(selectedWorkout); });
 
 /* ===== BUILD STEPS ===== */
 function buildSteps(w) {
@@ -431,7 +461,9 @@ function tick() {
   elapsedSecs++;
   setRing(timeLeft, steps[stepIdx].duration, false);
   document.getElementById('prog').style.width = Math.min(elapsedSecs / totalSecs * 100, 100) + '%';
+  if (timeLeft > 0 && timeLeft <= 5) playTick();
   if (timeLeft <= 0) {
+    playEnd();
     stepIdx++;
     if (stepIdx >= steps.length) { clearInterval(ticker); finishWorkout(); }
     else loadStep(stepIdx);
@@ -485,9 +517,11 @@ document.getElementById('btn-back').addEventListener('click', () => {
 
 /* ===== FINISH ===== */
 function finishWorkout() {
+  const w = selectedWorkout;
   releaseWakeLock();
   activeWorkout = null;
   markDone('move');
+  document.getElementById('done-words').innerHTML = w.doneMsg || 'You showed up and did the work.<br><br>That is everything.';
   show('done-screen');
   setTimeout(() => document.getElementById('done-glyph').classList.add('in'), 350);
   setTimeout(() => document.getElementById('done-words').classList.add('in'), 1200);
