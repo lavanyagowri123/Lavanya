@@ -253,6 +253,20 @@ const WORKOUTS = [
       { name: 'Hastauttanasana',      note: 'Inhale — sweep arms up, look up, gentle backbend.',         work: 10, rest: 0 },
       { name: 'Tadasana',             note: 'Exhale — lower arms, palms together. Rest in stillness.',   work: 10, rest: 0 },
     ]
+  },
+  {
+    id: 'lymph', name: 'Lymphatic Flow', tag: 'Gentle · Drainage', accent: '#5ba4b5', cardBg: '#eef6f8', border: 'rgba(91,164,181,0.2)',
+    bg: 'linear-gradient(150deg,#eef6f8 0%,#f0f8fa 100%)',
+    desc: 'Gentle rhythmic movement to wake up your lymphatic system and release stagnant energy.',
+    exercises: [
+      { name: 'Lymphatic Hops',  note: 'Bounce softly on the balls of your feet. Keep it light and effortless.',        work: 60, rest: 10 },
+      { name: 'Body Wave',       note: 'Start at your hips and ripple the wave up through your spine and arms.',         work: 60, rest: 10 },
+      { name: 'Arm Swings',      note: 'Let arms swing loosely across your body. Shoulders stay completely soft.',       work: 60, rest: 10 },
+      { name: 'Trunk Twists',    note: 'Rotate your torso gently side to side. Let your arms hang heavy.',              work: 60, rest: 10 },
+      { name: 'Dead Arms',       note: 'Shake your arms completely loose from your shoulders. No effort at all.',        work: 60, rest: 10 },
+      { name: 'Golf Swings',     note: 'Slow relaxed swings side to side as if holding a club. Twist through the hips.', work: 60, rest: 10 },
+      { name: 'March Slap',      note: 'March in place, slapping alternating thighs with each step to stimulate flow.',  work: 60, rest: 0  },
+    ]
   }
 ];
 
@@ -345,6 +359,8 @@ function openIntro(w, isToday) {
   });
 
   list.scrollTop = 0;
+  const totalSec = w.exercises.reduce((s, ex) => s + ex.work + ex.rest, 0);
+  document.getElementById('btn-begin').textContent = `Begin · ${Math.round(totalSec / 60)} minutes`;
   show('intro-screen');
 }
 
