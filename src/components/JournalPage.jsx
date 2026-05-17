@@ -92,15 +92,13 @@ export default function JournalPage({ onBack }) {
           ✦ Manifestation Journal
         </span>
         <div className="flex items-center gap-4">
-          {onBack ? (
+          {onBack && (
             <button
               onClick={onBack}
               className="font-journal text-sm text-ink/50 hover:text-ink transition-colors bg-transparent border-none cursor-pointer"
             >
               ← Back
             </button>
-          ) : (
-            <a href="/" className="font-journal text-sm text-ink/50 hover:text-ink transition-colors">← Home</a>
           )}
           <NotificationToggle />
           <button

@@ -12,9 +12,6 @@
     .screen { position: fixed; inset: 0; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity 0.6s ease; }
     .screen.active { opacity: 1; pointer-events: all; }
 
-    .home-link { position: fixed; top: 22px; right: 20px; z-index: 30; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(44,31,20,0.28); text-decoration: none; transition: color 0.2s; }
-    .home-link:active { color: rgba(44,31,20,0.7); }
-
     /* ---- MENU ---- */
     #menu-screen { background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .menu-hero { text-align: center; padding: 60px 24px 44px; }
@@ -89,8 +86,6 @@
   </style>
 </head>
 <body>
-
-<a href="/" class="home-link">Home</a>
 
 <!-- MENU -->
 <div id="menu-screen" class="screen active">
