@@ -238,20 +238,8 @@ const WORKOUTS = [
     id: 'surya', name: 'Surya Namaskar', tag: 'Flow · Breath', accent: '#c4956a', cardBg: '#fdf3e6', border: 'rgba(196,149,106,0.2)',
     bg: 'linear-gradient(150deg,#fef6ec 0%,#faf5ef 100%)',
     desc: 'Five rounds of sun salutation — flowing movement, breath and body as one.',
-    rounds: 5,
     exercises: [
-      { name: 'Pranamasana',          note: 'Stand tall, palms together at heart. Eyes soft.',           work: 10, rest: 0 },
-      { name: 'Hastauttanasana',      note: 'Inhale — sweep arms up and back. Open your chest.',         work: 10, rest: 0 },
-      { name: 'Hasta Padasana',       note: 'Exhale — fold forward, hands toward the floor.',            work: 10, rest: 0 },
-      { name: 'Ashwa Sanchalanasana', note: 'Inhale — step right leg back, right knee lowers.',          work: 10, rest: 0 },
-      { name: 'Dandasana',            note: 'Hold — step back to high plank. Body one straight line.',   work: 10, rest: 0 },
-      { name: 'Ashtanga Namaskara',   note: 'Exhale — lower knees, chest, and chin to the floor.',       work: 10, rest: 0 },
-      { name: 'Bhujangasana',         note: 'Inhale — press into palms, lift chest into cobra.',         work: 10, rest: 0 },
-      { name: 'Adho Mukha Svanasana', note: 'Exhale — lift hips, press heels toward the floor.',        work: 10, rest: 0 },
-      { name: 'Ashwa Sanchalanasana', note: 'Inhale — step right foot forward between your hands.',      work: 10, rest: 0 },
-      { name: 'Hasta Padasana',       note: 'Exhale — bring left foot forward, fold over your legs.',    work: 10, rest: 0 },
-      { name: 'Hastauttanasana',      note: 'Inhale — sweep arms up, look up, gentle backbend.',         work: 10, rest: 0 },
-      { name: 'Tadasana',             note: 'Exhale — lower arms, palms together. Rest in stillness.',   work: 10, rest: 0 },
+      { name: 'Surya Namaskar', note: 'Five rounds at your own pace. Let breath lead the movement.', work: 600, rest: 0 },
     ]
   },
   {
@@ -353,7 +341,7 @@ function openIntro(w, isToday) {
   w.exercises.forEach(ex => {
     const r = document.createElement('div');
     r.className = 'ex-row';
-    const dur = w.rounds ? `10s × ${w.rounds} rounds` : `${ex.work}s`;
+    const dur = ex.work >= 60 ? `${Math.round(ex.work / 60)} min` : `${ex.work}s`;
     r.innerHTML = `<span class="ex-row-name">${ex.name}</span><span class="ex-row-dur">${dur}</span>`;
     list.appendChild(r);
   });
@@ -403,7 +391,14 @@ function setRing(remaining, total, instant) {
     el.style.transition = 'stroke-dashoffset 1s linear';
     el.setAttribute('stroke-dashoffset', offset);
   }
-  document.getElementById('ring-num').textContent = remaining;
+  if (remaining >= 60) {
+    const m = Math.floor(remaining / 60), s = remaining % 60;
+    document.getElementById('ring-num').textContent = m + ':' + String(s).padStart(2, '0');
+    document.getElementById('ring-num').setAttribute('font-size', '28');
+  } else {
+    document.getElementById('ring-num').textContent = remaining;
+    document.getElementById('ring-num').setAttribute('font-size', '44');
+  }
 }
 
 /* ===== LOAD STEP ===== */
