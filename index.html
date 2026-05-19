@@ -149,9 +149,9 @@
       try {
         var s = JSON.parse(localStorage.getItem('stillspace_streak') || '{}');
         if (s.count) {
-          var prev = new Date(today + 'T00:00:00');
+          var prev = new Date(today + 'T12:00:00');
           prev.setDate(prev.getDate() - 1);
-          var yesterday = prev.toISOString().slice(0, 10);
+          var yesterday = prev.toLocaleDateString('sv', { timeZone: 'Australia/Melbourne' });
           if (s.lastDate === today || s.lastDate === yesterday) streakCount = s.count;
         }
       } catch(e) {}

@@ -257,9 +257,9 @@ function _updateStreak(today) {
   try {
     const streak = JSON.parse(localStorage.getItem('stillspace_streak') || '{"count":0,"lastDate":""}');
     if (streak.lastDate === today) return;
-    const prev = new Date(today + 'T00:00:00');
+    const prev = new Date(today + 'T12:00:00');
     prev.setDate(prev.getDate() - 1);
-    const yesterday = prev.toISOString().slice(0, 10);
+    const yesterday = prev.toLocaleDateString('sv', { timeZone: 'Australia/Melbourne' });
     const newCount = streak.lastDate === yesterday ? streak.count + 1 : 1;
     localStorage.setItem('stillspace_streak', JSON.stringify({ count: newCount, lastDate: today }));
   } catch(e) {}

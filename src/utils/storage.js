@@ -19,13 +19,17 @@ export function getTodayDone() {
   }
 }
 
+function prevMelbDay(melbDateStr) {
+  const d = new Date(melbDateStr + 'T12:00:00')
+  d.setDate(d.getDate() - 1)
+  return d.toLocaleDateString('sv', { timeZone: 'Australia/Melbourne' })
+}
+
 function _updateStreak(today) {
   try {
     const streak = JSON.parse(localStorage.getItem('stillspace_streak') || '{"count":0,"lastDate":""}')
     if (streak.lastDate === today) return
-    const prev = new Date(today + 'T00:00:00')
-    prev.setDate(prev.getDate() - 1)
-    const yesterday = prev.toISOString().slice(0, 10)
+    const yesterday = prevMelbDay(today)
     const newCount = streak.lastDate === yesterday ? streak.count + 1 : 1
     localStorage.setItem('stillspace_streak', JSON.stringify({ count: newCount, lastDate: today }))
   } catch {}
@@ -47,9 +51,7 @@ export function getStreakCount() {
     const today = getMelbDate()
     const streak = JSON.parse(localStorage.getItem('stillspace_streak') || '{"count":0,"lastDate":""}')
     if (!streak.count) return 0
-    const prev = new Date(today + 'T00:00:00')
-    prev.setDate(prev.getDate() - 1)
-    const yesterday = prev.toISOString().slice(0, 10)
+    const yesterday = prevMelbDay(today)
     if (streak.lastDate === today || streak.lastDate === yesterday) return streak.count
     return 0
   } catch {
